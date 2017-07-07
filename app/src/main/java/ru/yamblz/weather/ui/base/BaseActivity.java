@@ -2,6 +2,7 @@ package ru.yamblz.weather.ui.base;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import ru.yamblz.App;
@@ -21,6 +22,12 @@ public class BaseActivity extends AppCompatActivity {
                 .activityModule(new ActivityModule(this))
                 .appComponent(((App) getApplication()).getAppComponent())
                 .build();
+    }
+
+    protected void replaceFragment(int containerId, Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(containerId, fragment)
+                .commit();
     }
 
     public ActivityComponent getActivityComponent() {
