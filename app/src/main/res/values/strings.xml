@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Weather</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!--Overview strings-->
+    <string name="overview_title">Overview</string>
+
+    <!--Settings strings-->
+    <string name="settings_title">Settings</string>
+
+    <!--About strings-->
+    <string name="about_title">About</string>
+</resources>
