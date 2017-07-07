@@ -26,6 +26,9 @@ dependencies {
     //ButterKnife
     compile "com.jakewharton:butterknife:$butterKnife"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnife"
+    //Dagger 2
+    compile "com.google.dagger:dagger:$dagger"
+    annotationProcessor "com.google.dagger:dagger-compiler:$dagger"
 
 
     testCompile "junit:junit:$junit"
