@@ -14,14 +14,14 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        appComponent = initDaggerAppComonent();
+        appComponent = initDaggerAppComponent();
     }
 
     public AppComponent getAppComponent() {
         return appComponent;
     }
 
-    private AppComponent initDaggerAppComonent() {
+    private AppComponent initDaggerAppComponent() {
         return DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .build();
