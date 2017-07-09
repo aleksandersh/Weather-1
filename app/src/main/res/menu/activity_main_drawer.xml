@@ -4,13 +4,16 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_overview"
-            android:title="@string/overview_title" />
+            android:title="@string/overview_title"
+            android:icon="@drawable/ic_cloud_black_24dp"/>
         <item
             android:id="@+id/nav_settings"
-            android:title="@string/settings_title" />
+            android:title="@string/settings_title"
+            android:icon="@drawable/ic_settings_black_24dp"/>
         <item
             android:id="@+id/nav_about"
-            android:title="@string/about_title" />
+            android:title="@string/about_title"
+            android:icon="@drawable/ic_info_black_24dp"/>
     </group>
 
 </menu>
