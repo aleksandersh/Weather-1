@@ -1,4 +1,4 @@
-package ru.yamblz;
+package ru.yamblz.weather;
 
 
 import android.app.Application;

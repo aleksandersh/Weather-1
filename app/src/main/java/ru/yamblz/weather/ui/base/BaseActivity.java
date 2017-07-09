@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
-import ru.yamblz.App;
+import ru.yamblz.weather.App;
 import ru.yamblz.weather.di.component.ActivityComponent;
 import ru.yamblz.weather.di.component.DaggerActivityComponent;
 import ru.yamblz.weather.di.module.ActivityModule;
