@@ -1,7 +1,10 @@
 apply plugin: 'com.android.application'
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
+def apiPropertiesFile = rootProject.file("api.properties")
 def keystoreProperties = new Properties()
+def apiProperties = new Properties()
+apiProperties.load(new FileInputStream(apiPropertiesFile))
 if (keystorePropertiesFile.exists())
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 else
@@ -32,6 +35,10 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    buildTypes.each {
+        it.buildConfigField 'String', "BASE_URL", apiProperties['BaseUrl']
+        it.buildConfigField 'String', 'API_KEY', apiProperties['DarkSkyKey']
     }
 }
 
