@@ -16,6 +16,7 @@ allprojects {
     repositories {
         jcenter()
         maven { url 'https://maven.google.com' }
+        maven {url "https://clojars.org/repo/"}
     }
 }
 
@@ -31,7 +32,7 @@ ext {
     rxandroid = '2.0.1'
     retrofit = '2.3.0'
     okhttp = '3.8.1'
-
+    icepick = '3.2.0'
     junit = '4.12'
     espresso = '2.2.2'
 }

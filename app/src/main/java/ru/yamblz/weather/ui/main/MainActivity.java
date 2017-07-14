@@ -11,6 +11,8 @@ import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import icepick.Icepick;
+import icepick.State;
 import ru.yamblz.weather.R;
 import ru.yamblz.weather.ui.about.AboutViewImpl;
 import ru.yamblz.weather.ui.base.BaseActivity;
@@ -28,10 +30,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @BindView(R.id.nav_view)
     NavigationView navigationView;
 
+    @State
+    int fragmentId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Icepick.restoreInstanceState(this, savedInstanceState);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
@@ -42,10 +48,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         navigationView.setNavigationItemSelectedListener(this);
         if (savedInstanceState == null) {
-            int id = R.id.nav_overview;
-            selectItem(id);
-            navigationView.setCheckedItem(id);
+            fragmentId = R.id.nav_overview;
+            selectItem(fragmentId);
+            navigationView.setCheckedItem(fragmentId);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
     }
 
     @Override
@@ -60,7 +72,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        selectItem(id);
+        if (id != fragmentId) {
+            fragmentId = id;
+            selectItem(id);
+        }
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
