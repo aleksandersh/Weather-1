@@ -1,14 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--Placeholder-->
-    <TextView
-        android:text="@string/settings_title"
-        android:layout_width="wrap_content"
+    <com.yarolegovich.mp.MaterialPreferenceCategory
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_marginTop="10dp">
+        <com.yarolegovich.mp.MaterialSwitchPreference
+            android:id="@+id/updateSwitchPreference"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mp_key="b_update"
+            app:mp_default_value="true"
+            app:mp_title="@string/settings_update_title"/>
 
-</FrameLayout>
+        <com.yarolegovich.mp.MaterialChoicePreference
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mp_key="b_interval"
+            app:mp_default_value="3600000"
+            app:mp_title="@string/settings_interval_title"
+            app:mp_entry_descriptions="@array/interval_text"
+            app:mp_entry_values="@array/interval_values"
+            app:mp_show_value="onRight"/>
+    </com.yarolegovich.mp.MaterialPreferenceCategory>
+
+    <com.yarolegovich.mp.MaterialPreferenceCategory
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <com.yarolegovich.mp.MaterialChoicePreference
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mp_key="temperature_units"
+            app:mp_default_value="C"
+            app:mp_title="@string/settings_temperature_units"
+            app:mp_entry_descriptions="@array/units_text"
+            app:mp_entry_values="@array/units_values"
+            app:mp_show_value="onRight">
+
+        </com.yarolegovich.mp.MaterialChoicePreference>
+
+
+    </com.yarolegovich.mp.MaterialPreferenceCategory>
+
+</LinearLayout>

@@ -67,6 +67,8 @@ dependencies {
     compile "com.squareup.okhttp3:logging-interceptor:$okhttp"
     //Preferences
     compile "com.github.nikolaymanzhos:preferenceshelper:$preferenceshelper"
+    //MaterialSettings
+    compile 'com.yarolegovich:mp:1.0.5'
 
     //Icepick
     compile "frankiesardo:icepick:$icepick"

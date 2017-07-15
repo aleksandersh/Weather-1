@@ -4,6 +4,8 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="degree" translatable="false">°</string>
+
     <!--Error strings-->
     <string name="error_message">Error. Please try again later.</string>
 
@@ -12,6 +14,15 @@
 
     <!--Settings strings-->
     <string name="settings_title">Settings</string>
+    <string name="settings_update_title">Background update</string>
+    <string name="settings_interval_title">Interval</string>
+    <string name="settings_temperature_units">Temperature units</string>
+    <string-array name="interval_text">
+        <item>1 Hour</item>
+        <item>2 Hours</item>
+        <item>3 Hours</item>
+        <item>4 Hours</item>
+    </string-array>
 
     <!--About strings-->
     <string name="about_title">About</string>

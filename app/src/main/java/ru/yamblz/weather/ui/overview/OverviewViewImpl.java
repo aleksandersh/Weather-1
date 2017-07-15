@@ -12,9 +12,11 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import ru.yamblz.weather.R;
+import ru.yamblz.weather.data.model.response.Currently;
 import ru.yamblz.weather.data.model.response.WeatherResponse;
 import ru.yamblz.weather.ui.base.BaseFragment;
 import ru.yamblz.weather.ui.main.MainActivity;
+import ru.yamblz.weather.utils.Converter;
 
 
 public class OverviewViewImpl extends BaseFragment implements OverviewContract.OverviewView, SwipeRefreshLayout.OnRefreshListener {
@@ -27,6 +29,9 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
 
     @Inject
     OverviewPresenterImpl presenter;
+
+    @Inject
+    Converter converter;
 
     private ActionBar actionBar;
 
@@ -62,7 +67,8 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
 
     @Override
     public void displayWeatherData(WeatherResponse weatherResponse) {
-        temperature.setText(String.valueOf(weatherResponse.getCurrently().getTemperature()));
+        Currently currently = weatherResponse.getCurrently();
+        temperature.setText(converter.convertTemperature(currently.getTemperature()));
     }
 
     @Override

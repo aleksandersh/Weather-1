@@ -13,6 +13,14 @@
 
     <!--Settings strings-->
     <string name="settings_title">Настройки</string>
+    <string name="settings_update_title">Обновление в фоне</string>
+    <string name="settings_interval_title">Интервал</string>
+    <string-array name="interval_text">
+        <item>1 Час</item>
+        <item>2 Часа</item>
+        <item>3 Часа</item>
+        <item>4 Часа</item>
+    </string-array>
 
     <!--About strings-->
     <string name="about_title">О Приложении</string>

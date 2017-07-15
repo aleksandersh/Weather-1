@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="interval_values">
+        <item>3600000</item>
+        <item>7200000</item>
+        <item>10800000</item>
+        <item>14400000</item>
+    </string-array>
+
+    <string-array name="units_text">
+        <item>°C</item>
+        <item>°F</item>
+    </string-array>
+
+    <string-array name="units_values">
+        <item>C</item>
+        <item>F</item>
+    </string-array>
+</resources>
