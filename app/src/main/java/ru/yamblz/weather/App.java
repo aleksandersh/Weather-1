@@ -2,6 +2,7 @@ package ru.yamblz.weather;
 
 
 import android.app.Application;
+import com.defaultapps.preferenceshelper.PreferencesHelper;
 
 import ru.yamblz.weather.di.component.AppComponent;
 import ru.yamblz.weather.di.component.DaggerAppComponent;
@@ -14,17 +15,21 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        appComponent = initDaggerAppComponent();
+        initPrefsHelper();
+        appComponent = initDaggerAppComponent().build();
     }
 
     public AppComponent getAppComponent() {
         return appComponent;
     }
 
-    private AppComponent initDaggerAppComponent() {
+    protected DaggerAppComponent.Builder initDaggerAppComponent() {
         return DaggerAppComponent.builder()
-                .appModule(new AppModule(this))
-                .build();
+                .appModule(new AppModule(this));
     }
 
+    private void initPrefsHelper() {
+        new PreferencesHelper.Builder(this)
+                .build();
+    }
 }

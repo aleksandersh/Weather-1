@@ -7,6 +7,8 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import ru.yamblz.weather.data.AppSchedulerProvider;
+import ru.yamblz.weather.data.SchedulerProvider;
 import ru.yamblz.weather.di.ApplicationContext;
 
 @Module
@@ -16,6 +18,13 @@ public class AppModule {
 
     public AppModule(Application app) {
         this.app = app;
+    }
+
+
+    @Singleton
+    @Provides
+    SchedulerProvider provideSchedulers() {
+        return new AppSchedulerProvider();
     }
 
     @ApplicationContext

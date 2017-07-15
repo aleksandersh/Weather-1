@@ -4,6 +4,9 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <!--Error strings-->
+    <string name="error_message">Error. Please try again later.</string>
+
     <!--Overview strings-->
     <string name="overview_title">Overview</string>
 

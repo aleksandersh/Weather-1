@@ -4,6 +4,10 @@
 
     <string name="navigation_drawer_open">Открыть навигацию</string>
     <string name="navigation_drawer_close">Закрыть навигацию</string>
+
+    <!--Error strings-->
+    <string name="error_message">Ошибка. Попробуйте еще раз позже.</string>
+
     <!--Overview strings-->
     <string name="overview_title">Обзор</string>
 
