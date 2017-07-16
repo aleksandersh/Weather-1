@@ -12,4 +12,15 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
+
+    <style name="CustomCardView">
+        <item name="cardCornerRadius">4dp</item>
+        <item name="cardElevation">1dp</item>
+    </style>
+
+    <style name="NumbersTextView">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorPrimaryText</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
 </resources>

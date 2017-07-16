@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,21 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
 
     @BindView(R.id.temp)
     TextView temperature;
+
+    @BindView(R.id.currentWeatherCondition)
+    TextView currentWeatherCondition;
+
+    @BindView(R.id.feelsLike)
+    TextView feelsLike;
+
+    @BindView(R.id.humidity)
+    TextView humidity;
+
+    @BindView(R.id.clouds)
+    TextView clouds;
+
+    @BindView(R.id.iconImage)
+    ImageView icon;
 
     @Inject
     OverviewPresenterImpl presenter;
@@ -68,7 +84,12 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
     @Override
     public void displayWeatherData(WeatherResponse weatherResponse) {
         Currently currently = weatherResponse.getCurrently();
-        temperature.setText(converter.convertTemperature(currently.getTemperature()));
+        temperature.setText(getString(R.string.degree, converter.convertTemperature(currently.getTemperature())));
+        currentWeatherCondition.setText(currently.getSummary());
+        icon.setImageResource(converter.convertIconToRes(currently.getIcon()));
+        feelsLike.setText(getString(R.string.degree, converter.convertTemperature(currently.getApparentTemperature())));
+        humidity.setText(getString(R.string.percent, converter.convertToPercentage(currently.getHumidity())));
+        clouds.setText(getString(R.string.percent, converter.convertToPercentage(currently.getCloudCover())));
     }
 
     @Override

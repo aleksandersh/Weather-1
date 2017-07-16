@@ -4,13 +4,17 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="degree" translatable="false">°</string>
+    <string name="degree" translatable="false">%s°</string>
+    <string name="percent" translatable="false">%s%%</string>
 
     <!--Error strings-->
     <string name="error_message">Error. Please try again later.</string>
 
     <!--Overview strings-->
     <string name="overview_title">Overview</string>
+    <string name="overview_feels_like">Feels Like</string>
+    <string name="overview_humidity">Humidity</string>
+    <string name="overview_clouds">Clouds</string>
 
     <!--Settings strings-->
     <string name="settings_title">Settings</string>

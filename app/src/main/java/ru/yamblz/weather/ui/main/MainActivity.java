@@ -7,18 +7,23 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
+
+import com.google.android.gms.gcm.GcmNetworkManager;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import icepick.Icepick;
 import icepick.State;
 import ru.yamblz.weather.R;
+import ru.yamblz.weather.data.local.AppPreferenceManager;
 import ru.yamblz.weather.ui.about.AboutViewImpl;
 import ru.yamblz.weather.ui.base.BaseActivity;
 import ru.yamblz.weather.ui.overview.OverviewViewImpl;
 import ru.yamblz.weather.ui.settings.SettingsViewImpl;
+import ru.yamblz.weather.utils.UpdateTaskService;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -31,6 +36,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @BindView(R.id.nav_view)
     NavigationView navigationView;
 
+    @Inject
+    AppPreferenceManager preferenceManager;
+
     @State
     int fragmentId;
 
@@ -38,6 +46,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getActivityComponent().inject(this);
         Icepick.restoreInstanceState(this, savedInstanceState);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
@@ -49,6 +58,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         navigationView.setNavigationItemSelectedListener(this);
         if (savedInstanceState == null) {
+            checkFirstTimeUser();
             fragmentId = R.id.nav_overview;
             selectItem(fragmentId);
             navigationView.setCheckedItem(fragmentId);
@@ -95,6 +105,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             default:
                 replaceFragment(R.id.contentFrame, new OverviewViewImpl());
                 break;
+        }
+    }
+
+    private void checkFirstTimeUser() {
+        if (preferenceManager.getFirstTimeUser()) {
+            GcmNetworkManager gcmNetworkManager = GcmNetworkManager.getInstance(getApplicationContext());
+            UpdateTaskService.startUpdateTask(gcmNetworkManager, preferenceManager.getCurrentUpdateInterval());
+            preferenceManager.setFirstTimeUser(false);
         }
     }
 }
