@@ -2,11 +2,9 @@ package ru.yamblz.weather.ui.settings;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
-import com.google.android.gms.gcm.PeriodicTask;
 import com.yarolegovich.mp.MaterialChoicePreference;
 import com.yarolegovich.mp.MaterialSwitchPreference;
 

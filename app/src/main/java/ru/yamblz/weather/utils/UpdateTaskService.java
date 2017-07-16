@@ -19,7 +19,7 @@ import ru.yamblz.weather.di.module.AppModule;
 public class UpdateTaskService extends GcmTaskService {
 
     public static final String TAG = "update_task";
-    private final String TAG_LOG = "UpdateTaskService";
+    private static final String TAG_LOG = "UpdateTaskService";
 
     @Inject
     Api api;
@@ -47,7 +47,7 @@ public class UpdateTaskService extends GcmTaskService {
     }
 
     public static void startUpdateTask(GcmNetworkManager gcmNetworkManager, String period) {
-        Log.d(TAG, "startUpdateTask");
+        Log.d(TAG_LOG, "startUpdateTask");
         long interval = Long.valueOf(period);
 
         PeriodicTask task = new PeriodicTask.Builder()
@@ -62,7 +62,7 @@ public class UpdateTaskService extends GcmTaskService {
     }
 
     public static void stopUpdateTask(GcmNetworkManager gcmNetworkManager) {
-        Log.d(TAG, "stopUpdateTask");
+        Log.d(TAG_LOG, "stopUpdateTask");
 
         gcmNetworkManager.cancelTask(TAG, UpdateTaskService.class);
     }

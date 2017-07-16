@@ -23,7 +23,7 @@ public class AppPreferenceManager extends DefaultPreferencesManager {
         return getPreferencesHelper().getString(UPDATE_INTERVAL, "3600000");
     }
 
-    public String getCurrentUntis() {
+    public String getCurrentUnits() {
         return getPreferencesHelper().getString(CURRENT_UNITS, "C");
     }
 }

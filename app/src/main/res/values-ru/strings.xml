@@ -18,6 +18,7 @@
     <string name="settings_title">Настройки</string>
     <string name="settings_update_title">Обновление в фоне</string>
     <string name="settings_interval_title">Интервал</string>
+    <string name="settings_temperature_units">Единицы измерения температуры</string>
     <string-array name="interval_text">
         <item>1 Час</item>
         <item>2 Часа</item>

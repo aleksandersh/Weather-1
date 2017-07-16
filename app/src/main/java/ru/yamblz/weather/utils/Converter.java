@@ -12,12 +12,12 @@ public class Converter {
     private AppPreferenceManager preferenceManager;
 
     @Inject
-    public Converter(AppPreferenceManager preferenceManager) {
+    Converter(AppPreferenceManager preferenceManager) {
         this.preferenceManager = preferenceManager;
     }
 
     public String convertTemperature(double temperature) {
-        String currentUnits = preferenceManager.getCurrentUntis();
+        String currentUnits = preferenceManager.getCurrentUnits();
         if (currentUnits.equals("F")) {
             int rounded = (int) Math.round(temperature);
             return String.valueOf(rounded);
