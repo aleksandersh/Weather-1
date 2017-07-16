@@ -18,6 +18,7 @@
             app:mp_title="@string/settings_update_title"/>
 
         <com.yarolegovich.mp.MaterialChoicePreference
+            android:id="@+id/updateIntervalPreference"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:mp_key="b_interval"

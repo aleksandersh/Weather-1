@@ -50,6 +50,8 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile "com.android.support:appcompat-v7:$support"
+    compile "com.android.support:cardview-v7:$support"
+    compile "com.android.support:preference-v7:$support"
     compile "com.android.support:design:$support"
     //ButterKnife
     compile "com.jakewharton:butterknife:$butterKnife"
@@ -68,7 +70,9 @@ dependencies {
     //Preferences
     compile "com.github.nikolaymanzhos:preferenceshelper:$preferenceshelper"
     //MaterialSettings
-    compile 'com.yarolegovich:mp:1.0.5'
+    compile "com.yarolegovich:mp:$materialsettings"
+    //GCM
+    compile "com.google.android.gms:play-services-gcm:$gcm"
 
     //Icepick
     compile "frankiesardo:icepick:$icepick"

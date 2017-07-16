@@ -36,6 +36,8 @@ ext {
     okhttp = '3.8.1'
     icepick = '3.2.0'
     preferenceshelper = '1.1'
+    materialsettings = '1.0.5'
+    gcm = '11.0.2'
 
     mockito = '1.10.19'
     junit = '4.12'
