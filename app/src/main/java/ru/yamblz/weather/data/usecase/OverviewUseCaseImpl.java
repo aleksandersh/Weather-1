@@ -12,28 +12,37 @@ import ru.yamblz.weather.data.SchedulerProvider;
 import ru.yamblz.weather.data.local.LocalService;
 import ru.yamblz.weather.data.model.response.WeatherResponse;
 import ru.yamblz.weather.data.network.Api;
+import ru.yamblz.weather.utils.GlobalConstants;
+import ru.yamblz.weather.utils.RxBus;
 
 @Singleton
 public class OverviewUseCaseImpl implements OverviewUseCase {
 
     private Api api;
     private LocalService localService;
+    private RxBus rxBus;
     private SchedulerProvider schedulerProvider;
 
     private Disposable weatherDisposable;
     private ReplaySubject<WeatherResponse> weatherReplaySubject;
+    private WeatherResponse cache;
 
     @Inject
     OverviewUseCaseImpl(Api api,
                         LocalService localService,
+                        RxBus rxBus,
                         SchedulerProvider schedulerProvider) {
         this.api = api;
         this.localService = localService;
+        this.rxBus = rxBus;
         this.schedulerProvider = schedulerProvider;
     }
 
     @Override
     public Observable<WeatherResponse> loadCurrentWeather(double lat, double lng, boolean force) {
+        if (weatherReplaySubject!= null && !weatherReplaySubject.hasValue() && !weatherReplaySubject.hasThrowable()) {
+            rxBus.publish(GlobalConstants.WEATHER_INSTANT_CACHE, cache);
+        }
         if (force && weatherDisposable != null) {
             weatherDisposable.dispose();
         }
@@ -45,6 +54,7 @@ public class OverviewUseCaseImpl implements OverviewUseCase {
                             .filter(weatherResponse -> weatherResponse.getCurrently() != null).firstOrError();
 
             weatherDisposable = single
+                    .doOnSuccess(weatherResponse -> cache = weatherResponse)
                     .subscribe(weatherReplaySubject::onNext, weatherReplaySubject::onError);
         }
         return weatherReplaySubject;

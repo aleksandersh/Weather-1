@@ -18,6 +18,8 @@ import ru.yamblz.weather.data.model.response.WeatherResponse;
 import ru.yamblz.weather.ui.base.BaseFragment;
 import ru.yamblz.weather.ui.main.MainActivity;
 import ru.yamblz.weather.utils.Converter;
+import ru.yamblz.weather.utils.GlobalConstants;
+import ru.yamblz.weather.utils.RxBus;
 
 
 public class OverviewViewImpl extends BaseFragment implements OverviewContract.OverviewView, SwipeRefreshLayout.OnRefreshListener {
@@ -49,6 +51,9 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
     @Inject
     Converter converter;
 
+    @Inject
+    RxBus rxBus;
+
     private ActionBar actionBar;
 
     @Override
@@ -60,6 +65,9 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ((MainActivity) getActivity()).getActivityComponent().inject(this);
+        rxBus.subscribe(GlobalConstants.WEATHER_INSTANT_CACHE,
+                this,
+                (weatherResponse) -> displayWeatherData((WeatherResponse) weatherResponse));
         presenter.onAttach(this);
         actionBar = ((MainActivity) getActivity()).getSupportActionBar();
         //Temporary will be replaced later
@@ -72,6 +80,7 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        rxBus.unsubscribe(this);
         presenter.onDetach();
         actionBar = null;
     }
