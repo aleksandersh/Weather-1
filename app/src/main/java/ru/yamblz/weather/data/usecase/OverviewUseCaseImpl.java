@@ -40,7 +40,10 @@ public class OverviewUseCaseImpl implements OverviewUseCase {
 
     @Override
     public Observable<WeatherResponse> loadCurrentWeather(double lat, double lng, boolean force) {
-        if (weatherReplaySubject!= null && !weatherReplaySubject.hasValue() && !weatherReplaySubject.hasThrowable()) {
+        if (cache != null
+                && weatherReplaySubject != null
+                && !weatherReplaySubject.hasValue()
+                && !weatherReplaySubject.hasThrowable()) {
             rxBus.publish(GlobalConstants.WEATHER_INSTANT_CACHE, cache);
         }
         if (force && weatherDisposable != null) {

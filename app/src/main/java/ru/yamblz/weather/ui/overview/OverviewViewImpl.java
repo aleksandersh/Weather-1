@@ -6,6 +6,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,9 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
 
     @BindView(R.id.swipeToRefresh)
     SwipeRefreshLayout swipeRefreshLayout;
+
+    @BindView(R.id.overviewContent)
+    LinearLayout overviewContent;
 
     @BindView(R.id.temp)
     TextView temperature;
@@ -92,6 +96,7 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
 
     @Override
     public void displayWeatherData(WeatherResponse weatherResponse) {
+        overviewContent.setVisibility(View.VISIBLE);
         Currently currently = weatherResponse.getCurrently();
         temperature.setText(getString(R.string.degree, converter.convertTemperature(currently.getTemperature())));
         currentWeatherCondition.setText(currently.getSummary());
