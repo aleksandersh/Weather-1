@@ -28,7 +28,7 @@ public class Converter {
     }
 
     public String convertToPercentage(double value) {
-        int result = (int) Math.round((1-value)*100);
+        int result = (int) Math.round(value*100);
         return String.valueOf(result);
     }
 
