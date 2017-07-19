@@ -15,7 +15,7 @@ public class AppSchedulerProvider implements SchedulerProvider {
     public AppSchedulerProvider() {}
 
     @Override
-    public <T> ObservableTransformer<T, T> applyIoSchedulers() {
+    public <T> SingleTransformer<T, T> applyIoSchedulers() {
         return observable -> observable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

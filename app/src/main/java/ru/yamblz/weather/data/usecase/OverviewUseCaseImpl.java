@@ -52,8 +52,8 @@ public class OverviewUseCaseImpl implements OverviewUseCase {
         if (weatherDisposable == null || weatherDisposable.isDisposed()) {
             weatherReplaySubject = ReplaySubject.create();
 
-            Single<WeatherResponse> single = force ? network(lat, lng).singleOrError() :
-                    Observable.concat(local(), network(lat, lng))
+            Single<WeatherResponse> single = force ? network(lat, lng) :
+                    Single.concat(local(), network(lat, lng))
                             .filter(weatherResponse -> weatherResponse.getCurrently() != null).firstOrError();
 
             weatherDisposable = single
@@ -63,14 +63,14 @@ public class OverviewUseCaseImpl implements OverviewUseCase {
         return weatherReplaySubject;
     }
 
-    private Observable<WeatherResponse> network(double lat, double lng) {
+    private Single<WeatherResponse> network(double lat, double lng) {
         return api.getWeather(BuildConfig.API_KEY, lat, lng)
-                .doOnNext(localService::writeResponseToFile)
+                .doOnSuccess(localService::writeResponseToFile)
                 .compose(schedulerProvider.applyIoSchedulers());
     }
 
-    private Observable<WeatherResponse> local() {
-        return Observable.fromCallable(() -> localService.readResponseFromFile())
+    private Single<WeatherResponse> local() {
+        return Single.fromCallable(() -> localService.readResponseFromFile())
                 .onErrorReturnItem(new WeatherResponse())
                 .compose(schedulerProvider.applyIoSchedulers());
     }
