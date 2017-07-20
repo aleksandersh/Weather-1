@@ -2,14 +2,54 @@ package ru.yamblz.weather.ui.overview;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import javax.inject.Inject;
+
+import butterknife.BindView;
 import ru.yamblz.weather.R;
+import ru.yamblz.weather.data.model.response.Currently;
+import ru.yamblz.weather.data.model.response.WeatherResponse;
 import ru.yamblz.weather.ui.base.BaseFragment;
 import ru.yamblz.weather.ui.main.MainActivity;
+import ru.yamblz.weather.utils.Converter;
 
 
-public class OverviewViewImpl extends BaseFragment implements OverviewContract.OverviewView {
+public class OverviewViewImpl extends BaseFragment implements OverviewContract.OverviewView, SwipeRefreshLayout.OnRefreshListener {
+
+    @BindView(R.id.swipeToRefresh)
+    SwipeRefreshLayout swipeRefreshLayout;
+
+    @BindView(R.id.temp)
+    TextView temperature;
+
+    @BindView(R.id.currentWeatherCondition)
+    TextView currentWeatherCondition;
+
+    @BindView(R.id.feelsLike)
+    TextView feelsLike;
+
+    @BindView(R.id.humidity)
+    TextView humidity;
+
+    @BindView(R.id.clouds)
+    TextView clouds;
+
+    @BindView(R.id.iconImage)
+    ImageView icon;
+
+    @Inject
+    OverviewPresenterImpl presenter;
+
+    @Inject
+    Converter converter;
+
+    private ActionBar actionBar;
 
     @Override
     protected int provideLayout() {
@@ -18,7 +58,58 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ((MainActivity) getActivity()).getActivityComponent().inject(this);
+        presenter.onAttach(this);
+        actionBar = ((MainActivity) getActivity()).getSupportActionBar();
+        //Temporary will be replaced later
         //noinspection ConstantConditions
-        ((MainActivity) getActivity()).getSupportActionBar().setTitle(R.string.overview_title);
+        actionBar.setTitle("Moscow");
+        swipeRefreshLayout.setOnRefreshListener(this);
+        presenter.requestCurrentWeather(55.751244, 37.618423, false);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.onDetach();
+        actionBar = null;
+    }
+
+    @Override
+    public void onRefresh() {
+        presenter.requestCurrentWeather(55.751244, 37.618423, true);
+    }
+
+    @Override
+    public void displayWeatherData(WeatherResponse weatherResponse) {
+        Currently currently = weatherResponse.getCurrently();
+        temperature.setText(getString(R.string.degree, converter.convertTemperature(currently.getTemperature())));
+        currentWeatherCondition.setText(currently.getSummary());
+        icon.setImageResource(converter.convertIconToRes(currently.getIcon()));
+        feelsLike.setText(getString(R.string.degree, converter.convertTemperature(currently.getApparentTemperature())));
+        humidity.setText(getString(R.string.percent, converter.convertToPercentage(currently.getHumidity())));
+        clouds.setText(getString(R.string.percent, converter.convertToPercentage(currently.getCloudCover())));
+    }
+
+    @Override
+    public void displayCityName(String name) {
+        //noinspection ConstantConditions
+        actionBar.setTitle(name);
+    }
+
+    @Override
+    public void showError() {
+        Toast.makeText(getContext().getApplicationContext(), R.string.error_message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showLoading() {
+        swipeRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void hideLoading() {
+        swipeRefreshLayout.setRefreshing(false);
     }
 }
