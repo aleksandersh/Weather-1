@@ -16,6 +16,7 @@ import java.lang.reflect.Type;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.Single;
 import ru.yamblz.weather.data.model.response.WeatherResponse;
 import ru.yamblz.weather.di.ApplicationContext;
 
@@ -40,7 +41,11 @@ public class LocalService {
         bs.close();
     }
 
-    public WeatherResponse readResponseFromFile() throws IOException {
+    public Single<WeatherResponse> readResponseFromFile() {
+        return Single.fromCallable(this::readFile);
+    }
+
+    private WeatherResponse readFile() throws IOException {
         Type postsResponseType = new TypeToken<WeatherResponse>(){}.getType();
         String line;
         StringBuilder jsonString = new StringBuilder();

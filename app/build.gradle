@@ -79,6 +79,7 @@ dependencies {
     provided "frankiesardo:icepick-processor:$icepick"
     testCompile "junit:junit:$junit"
     testCompile "org.mockito:mockito-core:$mockito"
+    testCompile "org.robolectric:robolectric:$robolectric"
     androidTestCompile("com.android.support.test.espresso:espresso-core:$espresso", {
         exclude group: 'com.android.support', module: 'support-annotations'
     })

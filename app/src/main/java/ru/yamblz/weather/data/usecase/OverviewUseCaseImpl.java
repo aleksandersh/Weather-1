@@ -70,7 +70,7 @@ public class OverviewUseCaseImpl implements OverviewUseCase {
     }
 
     private Single<WeatherResponse> local() {
-        return Single.fromCallable(() -> localService.readResponseFromFile())
+        return localService.readResponseFromFile()
                 .onErrorReturnItem(new WeatherResponse())
                 .compose(schedulerProvider.applyIoSchedulers());
     }

@@ -1,7 +1,5 @@
 package ru.yamblz.weather.ui.overview;
 
-import android.util.Log;
-
 import javax.inject.Inject;
 
 import ru.yamblz.weather.data.usecase.OverviewUseCase;
@@ -31,7 +29,6 @@ public class OverviewPresenterImpl extends BasePresenter<OverviewContract.Overvi
                         err -> {
                             getView().showError();
                             getView().hideLoading();
-                            Log.d("Presenter", err.getMessage());
                         }
                 )
         );
