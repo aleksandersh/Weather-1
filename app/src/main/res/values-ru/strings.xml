@@ -10,7 +10,7 @@
 
     <!--Overview strings-->
     <string name="overview_title">Обзор</string>
-    <string name="overview_feels_like">По ощущению</string>
+    <string name="overview_feels_like">Ощущается</string>
     <string name="overview_humidity">Влажность</string>
     <string name="overview_clouds">Облака</string>
 

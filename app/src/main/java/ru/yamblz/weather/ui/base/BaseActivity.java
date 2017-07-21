@@ -3,6 +3,7 @@ package ru.yamblz.weather.ui.base;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import ru.yamblz.weather.App;
@@ -24,10 +25,14 @@ public class BaseActivity extends AppCompatActivity {
                 .build();
     }
 
-    protected void replaceFragment(int containerId, Fragment fragment) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(containerId, fragment)
-                .commit();
+    protected void replaceFragment(int containerId, Fragment fragment, boolean addToBackStack) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        if (addToBackStack) {
+            ft.replace(containerId, fragment).addToBackStack(null);
+        } else {
+            ft.replace(containerId, fragment);
+        }
+        ft.commit();
     }
 
     public ActivityComponent getActivityComponent() {

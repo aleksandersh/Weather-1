@@ -35,8 +35,7 @@ public class UpdateTaskService extends GcmTaskService {
         result = GcmNetworkManager.RESULT_SUCCESS;
         Log.d(TAG, "taskIsRunning");
         api.getWeather(BuildConfig.API_KEY, 55.751244, 37.618423)
-                .doOnNext(localService::writeResponseToFile)
-                .singleOrError()
+                .doOnSuccess(localService::writeResponseToFile)
                 .subscribe(
                         weatherResponse -> result = GcmNetworkManager.RESULT_SUCCESS,
                         err -> {
