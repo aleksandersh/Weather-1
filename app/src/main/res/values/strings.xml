@@ -30,4 +30,10 @@
 
     <!--About strings-->
     <string name="about_title">About</string>
+
+    <!--Cities-->
+    <string name="cities_title">Location selection</string>
+    <string name="cities_search_image">Search</string>
+    <string name="cities_search_hint">Specify the location</string>
+    <string name="cities_clear_button">Clear text</string>
 </resources>

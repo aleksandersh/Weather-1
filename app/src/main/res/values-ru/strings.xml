@@ -28,4 +28,10 @@
 
     <!--About strings-->
     <string name="about_title">О Приложении</string>
+
+    <!--Cities-->
+    <string name="cities_title">Выбор местоположения</string>
+    <string name="cities_search_image">Поиск</string>
+    <string name="cities_search_hint">Укажите местоположение</string>
+    <string name="cities_clear_button">Очистить текст</string>
 </resources>
