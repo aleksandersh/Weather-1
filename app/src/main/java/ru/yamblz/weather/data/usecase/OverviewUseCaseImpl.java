@@ -40,10 +40,13 @@ public class OverviewUseCaseImpl implements OverviewUseCase {
 
     @Override
     public Observable<WeatherResponse> loadCurrentWeather(double lat, double lng, boolean force) {
+        // TODO: 27.07.2017 Придумать как определять подходящую локацию. Сравнение широты и долготы не катит.
         if (cache != null
                 && weatherReplaySubject != null
                 && !weatherReplaySubject.hasValue()
-                && !weatherReplaySubject.hasThrowable()) {
+                && !weatherReplaySubject.hasThrowable()
+                && cache.getLatitude() == lat
+                && cache.getLongitude() == lng) {
             rxBus.publish(GlobalConstants.WEATHER_INSTANT_CACHE, cache);
         }
         if (force && weatherDisposable != null) {
