@@ -3,6 +3,7 @@ package ru.yamblz.weather.di.component;
 import dagger.Component;
 import ru.yamblz.weather.di.module.ActivityModule;
 import ru.yamblz.weather.di.scope.PerActivity;
+import ru.yamblz.weather.ui.cities.CitiesViewImpl;
 import ru.yamblz.weather.ui.main.MainActivity;
 import ru.yamblz.weather.ui.overview.OverviewViewImpl;
 
@@ -11,4 +12,5 @@ import ru.yamblz.weather.ui.overview.OverviewViewImpl;
 public interface ActivityComponent {
     void inject(MainActivity activity);
     void inject(OverviewViewImpl overviewView);
+    void inject(CitiesViewImpl citiesView);
 }

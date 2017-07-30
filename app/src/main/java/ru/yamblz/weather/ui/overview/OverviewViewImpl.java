@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import ru.yamblz.weather.R;
+import ru.yamblz.weather.data.model.places.Location;
 import ru.yamblz.weather.data.model.response.Currently;
 import ru.yamblz.weather.data.model.response.WeatherResponse;
 import ru.yamblz.weather.ui.base.BaseFragment;
@@ -59,6 +60,7 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
     RxBus rxBus;
 
     private ActionBar actionBar;
+    private Location currentLocation;
 
     @Override
     protected int provideLayout() {
@@ -74,11 +76,10 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
                 (weatherResponse) -> displayWeatherData((WeatherResponse) weatherResponse));
         presenter.onAttach(this);
         actionBar = ((MainActivity) getActivity()).getSupportActionBar();
-        //Temporary will be replaced later
-        //noinspection ConstantConditions
-        actionBar.setTitle("Moscow");
+
         swipeRefreshLayout.setOnRefreshListener(this);
-        presenter.requestCurrentWeather(55.751244, 37.618423, false);
+
+        presenter.requestInitialData();
     }
 
     @Override
@@ -91,7 +92,12 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
 
     @Override
     public void onRefresh() {
-        presenter.requestCurrentWeather(55.751244, 37.618423, true);
+        if (currentLocation != null) {
+            presenter.requestCurrentWeather(
+                    currentLocation.getLatitude(), currentLocation.getLongitude(), true);
+        } else {
+            presenter.requestInitialData();
+        }
     }
 
     @Override
@@ -125,5 +131,13 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
     @Override
     public void hideLoading() {
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void setCurrentLocation(Location location) {
+        // TODO: 27.07.2017 После добавления городов подгрузка данных из памяти может выдавать неверный результат.
+        presenter.requestCurrentWeather(location.getLatitude(), location.getLongitude(), true);
+        currentLocation = location;
+        displayCityName(location.getTitle());
     }
 }

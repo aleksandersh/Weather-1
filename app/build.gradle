@@ -40,6 +40,8 @@ android {
     buildTypes.each {
         it.buildConfigField 'String', "BASE_URL", apiProperties['BaseUrl']
         it.buildConfigField 'String', 'API_KEY', apiProperties['DarkSkyKey']
+        it.buildConfigField 'String', 'GOOGLE_PLACES_BASE_URL', apiProperties['GooglePlacesBaseUrl']
+        it.buildConfigField 'String', 'GOOGLE_PLACES_API_KEY', apiProperties['GooglePlacesKey']
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -62,6 +64,8 @@ dependencies {
     //RxJava 2
     compile "io.reactivex.rxjava2:rxandroid:$rxandroid"
     compile "io.reactivex.rxjava2:rxjava:$rxjava"
+    //RxBinding
+    compile "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$rxbinding"
     //Retrofit 2
     compile "com.squareup.retrofit2:retrofit:$retrofit"
     compile "com.squareup.retrofit2:converter-gson:$retrofit"

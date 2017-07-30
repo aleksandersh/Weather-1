@@ -24,6 +24,7 @@ import ru.yamblz.weather.R;
 import ru.yamblz.weather.data.local.AppPreferenceManager;
 import ru.yamblz.weather.ui.about.AboutViewImpl;
 import ru.yamblz.weather.ui.base.BaseActivity;
+import ru.yamblz.weather.ui.cities.CitiesViewImpl;
 import ru.yamblz.weather.ui.overview.OverviewViewImpl;
 import ru.yamblz.weather.ui.settings.SettingsViewImpl;
 import ru.yamblz.weather.utils.UpdateTaskService;
@@ -123,6 +124,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         switch (id) {
             case R.id.nav_overview:
                 replaceFragment(R.id.contentFrame, new OverviewViewImpl(), false);
+                break;
+            case R.id.nav_cities:
+                replaceFragment(R.id.contentFrame, CitiesViewImpl.newInstance(), true);
                 break;
             case R.id.nav_settings:
                 replaceFragment(R.id.contentFrame, new SettingsViewImpl(), true);

@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 import io.reactivex.Single;
 import io.reactivex.schedulers.TestScheduler;
 import ru.yamblz.weather.data.TestSchedulerProvider;
+import ru.yamblz.weather.data.local.AppPreferenceManager;
 import ru.yamblz.weather.data.local.LocalService;
 import ru.yamblz.weather.data.model.response.Currently;
 import ru.yamblz.weather.data.model.response.WeatherResponse;
@@ -32,6 +33,9 @@ public class OverviewUseCaseTest {
     @Mock
     RxBus rxBus;
 
+    @Mock
+    AppPreferenceManager mPreferenceManager;
+
     private OverviewUseCase overviewUseCase;
     private TestScheduler testScheduler;
 
@@ -44,7 +48,8 @@ public class OverviewUseCaseTest {
         actualResponse = null;
         actualError = null;
         testScheduler = new TestScheduler();
-        overviewUseCase = new OverviewUseCaseImpl(api, localService, rxBus, new TestSchedulerProvider(testScheduler));
+        overviewUseCase = new OverviewUseCaseImpl(api, localService, rxBus,
+                new TestSchedulerProvider(testScheduler), mPreferenceManager);
     }
 
     @Test
