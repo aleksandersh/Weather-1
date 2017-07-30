@@ -8,7 +8,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,12 +72,12 @@ public class CitiesViewImpl extends BaseFragment implements CitiesContract.Citie
         ((BaseActivity) getActivity()).getActivityComponent().inject(this);
         mPresenter.onAttach(this);
 
-        ActionBar actionBar = ((BaseActivity) getActivity()).getSupportActionBar();
-        actionBar.setTitle(getString(R.string.cities_title));
+        setTitle(getString(R.string.cities_title));
 
-        startFillingInitialData();
         setupRecyclerView();
         setupSearchInput();
+
+        mPresenter.requestInitialData();
     }
 
     @Override
@@ -97,14 +96,32 @@ public class CitiesViewImpl extends BaseFragment implements CitiesContract.Citie
 
     @Override
     public void showError(@StringRes int stringResId) {
-        showContent();
         Toast.makeText(getActivity(), stringResId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showContent() {
+        ButterKnife.apply(mContentViews, new ButterKnife.Action<View>() {
+            @Override
+            public void apply(@NonNull View view, int index) {
+                view.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    @Override
+    public void hideContent() {
+        ButterKnife.apply(mContentViews, new ButterKnife.Action<View>() {
+            @Override
+            public void apply(@NonNull View view, int index) {
+                view.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     @Override
     public void setCurrentLocation(Location location) {
         mSearchInput.setText(location.getTitle());
-        showContent();
     }
 
     @Override
@@ -117,12 +134,9 @@ public class CitiesViewImpl extends BaseFragment implements CitiesContract.Citie
         mSearchInput.setText("");
     }
 
-    /**
-     * Заполнить фрагмент начальными данными.
-     */
-    private void startFillingInitialData() {
-        hideContent();
-        mPresenter.requestInitialData();
+    private void setTitle(String title) {
+        ActionBar actionBar = ((BaseActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null) actionBar.setTitle(title);
     }
 
     /**
@@ -147,24 +161,6 @@ public class CitiesViewImpl extends BaseFragment implements CitiesContract.Citie
                 .subscribe(charSequence -> mPresenter.requestPredictions(charSequence.toString()));
     }
 
-    private void hideContent() {
-        ButterKnife.apply(mContentViews, new ButterKnife.Action<View>() {
-            @Override
-            public void apply(@NonNull View view, int index) {
-                view.setVisibility(View.INVISIBLE);
-            }
-        });
-    }
-
-    private void showContent() {
-        ButterKnife.apply(mContentViews, new ButterKnife.Action<View>() {
-            @Override
-            public void apply(@NonNull View view, int index) {
-                view.setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
     class CitiesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private PlacePrediction mPrediction;
 
@@ -179,7 +175,6 @@ public class CitiesViewImpl extends BaseFragment implements CitiesContract.Citie
 
         @Override
         public void onClick(View view) {
-            hideContent();
             mPresenter.setCurrentLocationByPrediction(mPrediction);
         }
 

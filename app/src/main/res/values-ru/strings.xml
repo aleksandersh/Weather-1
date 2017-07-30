@@ -41,4 +41,6 @@
     <string name="error_places_over_query_limit">Превышение квоты</string>
     <string name="error_places_request_denied">Запрос отклонен</string>
     <string name="error_places_invalid_request">Недопустимый запрос</string>
+    <string name="error_places_not_found">Запрашиваемая локация не найдена</string>
+    <string name="error_places_unknown_error">Ошибка на стороне сервера</string>
 </resources>

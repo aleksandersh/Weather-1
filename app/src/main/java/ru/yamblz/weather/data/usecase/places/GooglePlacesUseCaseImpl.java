@@ -32,6 +32,8 @@ public class GooglePlacesUseCaseImpl implements CitiesUseCase {
     private static final String STATUS_OVER_QUERY_LIMIT = "OVER_QUERY_LIMIT";
     private static final String STATUS_REQUEST_DENIED = "REQUEST_DENIED";
     private static final String STATUS_INVALID_REQUEST = "INVALID_REQUEST";
+    private static final String STATUS_NOT_FOUND = "NOT_FOUND";
+    private static final String STATUS_UNKNOWN_ERROR = "UNKNOWN_ERROR";
 
     private GooglePlacesApi mPlacesApi;
     private AppPreferenceManager mPreferenceManager;
@@ -76,55 +78,92 @@ public class GooglePlacesUseCaseImpl implements CitiesUseCase {
     @Override
     public Completable setCurrentLocationByPrediction(PlacePrediction prediction) {
         return mPlacesApi.getPlaceDetails(BuildConfig.GOOGLE_PLACES_API_KEY, prediction.getId())
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
                 .flatMap(placeDetailsDto ->
                         Single.create(subscriber -> {
-                            if (placeDetailsDto.getStatus().equals(STATUS_OK)) {
-                                LocationDto locationDto = placeDetailsDto
-                                        .getPlaceDetails()
-                                        .getGeometry()
-                                        .getLocation();
-                                Location location = new Location(
-                                        prediction.getName(),
-                                        locationDto.getLat(),
-                                        locationDto.getLng());
-                                mPreferenceManager.setCurrentLocation(location);
-                                subscriber.onSuccess(location);
-                            } else {
-                                subscriber.onError(null);
+                            switch (placeDetailsDto.getStatus()) {
+                                case STATUS_OK:
+                                    LocationDto locationDto = placeDetailsDto
+                                            .getPlaceDetails()
+                                            .getGeometry()
+                                            .getLocation();
+                                    Location location = new Location(
+                                            prediction.getName(),
+                                            locationDto.getLat(),
+                                            locationDto.getLng());
+                                    mPreferenceManager.setCurrentLocation(location);
+                                    subscriber.onSuccess(location);
+                                    break;
+                                case STATUS_ZERO_RESULTS:
+                                    subscriber.onError(new GooglePlacesException(
+                                            GooglePlacesException.ErrorDescription.NOT_FOUND));
+                                    break;
+                                case STATUS_OVER_QUERY_LIMIT:
+                                    subscriber.onError(new GooglePlacesException(
+                                            GooglePlacesException.ErrorDescription.OVER_QUERY_LIMIT));
+                                    break;
+                                case STATUS_REQUEST_DENIED:
+                                    subscriber.onError(new GooglePlacesException(
+                                            GooglePlacesException.ErrorDescription.REQUEST_DENIED));
+                                    break;
+                                case STATUS_INVALID_REQUEST:
+                                    subscriber.onError(new GooglePlacesException(
+                                            GooglePlacesException.ErrorDescription.INVALID_REQUEST));
+                                    break;
+                                case STATUS_NOT_FOUND:
+                                    subscriber.onError(new GooglePlacesException(
+                                            GooglePlacesException.ErrorDescription.NOT_FOUND));
+                                    break;
+                                case STATUS_UNKNOWN_ERROR:
+                                    subscriber.onError(new GooglePlacesException(
+                                            GooglePlacesException.ErrorDescription.UNKNOWN_ERROR));
+                                    break;
+                                default:
+                                    subscriber.onError(null);
                             }
                         })
                 ).toCompletable();
+    }
+
+    @Override
+    public Single<Location> getCurrentLocation() {
+        return Single.fromCallable(() -> mPreferenceManager.getLocation());
     }
 
     private List<PlacePrediction> predictionsFromResponseDto(PredictionsResponseDto responseDto) {
         List<PlacePrediction> predictions = new ArrayList<>();
         List<PredictionDto> predictionDtoList =
                 responseDto.getPredictions();
-        for (PredictionDto predictionDto : predictionDtoList) {
-            // Чтобы выделить ожидаемое пользователем наименование местоположения,
-            // за него принимается часть определения, соответствующая поисковому запросу.
-            String name = predictionDto.getDescription();
-            int offset = 0;
-            List<MatchedSubstringDto> matchedSubstringDtos =
-                    predictionDto.getMatchedSubstrings();
-            if (matchedSubstringDtos != null && !matchedSubstringDtos.isEmpty()) {
-                offset = matchedSubstringDtos.get(0).getOffset();
-            }
-            List<TermDto> termDtos = predictionDto.getTerms();
-            if (termDtos != null && !termDtos.isEmpty()) {
-                for (TermDto termDto : termDtos) {
-                    if (termDto.getOffset().equals(offset)) {
-                        name = termDto.getValue();
-                        break;
+        if (predictionDtoList != null) {
+            for (PredictionDto predictionDto : predictionDtoList) {
+                String description = predictionDto.getDescription();
+                String placeId = predictionDto.getPlaceId();
+                String name = predictionDto.getDescription();
+                if (name == null || placeId == null || description == null) continue;
+
+                // Чтобы выделить ожидаемое пользователем наименование местоположения,
+                // за него принимается часть определения, соответствующая поисковому запросу.
+                int offset = 0;
+                List<MatchedSubstringDto> matchedSubstringDtos =
+                        predictionDto.getMatchedSubstrings();
+                if (matchedSubstringDtos != null && !matchedSubstringDtos.isEmpty()) {
+                    offset = matchedSubstringDtos.get(0).getOffset();
+
+                    List<TermDto> termDtos = predictionDto.getTerms();
+                    if (termDtos != null && !termDtos.isEmpty()) {
+                        for (TermDto termDto : termDtos) {
+                            if (termDto.getOffset().equals(offset)) {
+                                name = termDto.getValue();
+                                break;
+                            }
+                        }
                     }
                 }
+
+                predictions.add(new PlacePrediction(
+                        placeId,
+                        name,
+                        description));
             }
-            predictions.add(new PlacePrediction(
-                    predictionDto.getPlaceId(),
-                    name,
-                    predictionDto.getDescription()));
         }
         return predictions;
     }

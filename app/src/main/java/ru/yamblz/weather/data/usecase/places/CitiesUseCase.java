@@ -4,6 +4,7 @@ import java.util.List;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
+import ru.yamblz.weather.data.model.places.Location;
 import ru.yamblz.weather.data.model.places.PlacePrediction;
 
 /**
@@ -26,4 +27,9 @@ public interface CitiesUseCase {
      * @return Rx-источник с информацией об успешности операции.
      */
     Completable setCurrentLocationByPrediction(PlacePrediction prediction);
+
+    /**
+     * @return Текущая установленная в приложении локация.
+     */
+    Single<Location> getCurrentLocation();
 }

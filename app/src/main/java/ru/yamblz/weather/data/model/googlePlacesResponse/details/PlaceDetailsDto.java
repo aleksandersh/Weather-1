@@ -21,6 +21,16 @@ public class PlaceDetailsDto {
     @Expose
     private String reference;
 
+    public PlaceDetailsDto() {
+    }
+
+    public PlaceDetailsDto(GeometryDto geometry, String name, String placeId, String reference) {
+        this.geometry = geometry;
+        this.name = name;
+        this.placeId = placeId;
+        this.reference = reference;
+    }
+
     public GeometryDto getGeometry() {
         return geometry;
     }

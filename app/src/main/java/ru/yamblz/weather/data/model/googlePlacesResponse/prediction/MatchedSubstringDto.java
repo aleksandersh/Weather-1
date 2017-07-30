@@ -17,6 +17,14 @@ public class MatchedSubstringDto {
     @Expose
     private Integer offset;
 
+    public MatchedSubstringDto() {
+    }
+
+    public MatchedSubstringDto(Integer length, Integer offset) {
+        this.length = length;
+        this.offset = offset;
+    }
+
     public Integer getLength() {
         return length;
     }

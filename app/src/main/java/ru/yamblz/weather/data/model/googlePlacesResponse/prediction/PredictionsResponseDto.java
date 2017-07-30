@@ -19,6 +19,14 @@ public class PredictionsResponseDto {
     @Expose
     private List<PredictionDto> mPredictions = null;
 
+    public PredictionsResponseDto() {
+    }
+
+    public PredictionsResponseDto(String status, List<PredictionDto> predictions) {
+        mStatus = status;
+        mPredictions = predictions;
+    }
+
     public String getStatus() {
         return mStatus;
     }

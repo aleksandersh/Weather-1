@@ -135,12 +135,8 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
 
     @Override
     public void setCurrentLocation(Location location) {
-        if (currentLocation == null
-                || currentLocation.getLatitude() != location.getLatitude()
-                || currentLocation.getLongitude() != location.getLongitude()) {
-            // TODO: 27.07.2017 После добавления городов подгрузка данных из памяти может выдавать неверный результат.
-            presenter.requestCurrentWeather(location.getLatitude(), location.getLongitude(), true);
-        }
+        // TODO: 27.07.2017 После добавления городов подгрузка данных из памяти может выдавать неверный результат.
+        presenter.requestCurrentWeather(location.getLatitude(), location.getLongitude(), true);
         currentLocation = location;
         displayCityName(location.getTitle());
     }

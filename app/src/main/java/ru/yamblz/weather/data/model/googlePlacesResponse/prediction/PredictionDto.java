@@ -35,6 +35,25 @@ public class PredictionDto {
     @Expose
     private List<String> mTypes = null;
 
+    public PredictionDto() {
+    }
+
+    public PredictionDto(String description,
+                         String id,
+                         String placeId,
+                         String reference,
+                         List<MatchedSubstringDto> matchedSubstrings,
+                         List<TermDto> terms,
+                         List<String> types) {
+        mDescription = description;
+        mId = id;
+        mPlaceId = placeId;
+        mReference = reference;
+        this.matchedSubstrings = matchedSubstrings;
+        this.terms = terms;
+        mTypes = types;
+    }
+
     public String getDescription() {
         return mDescription;
     }

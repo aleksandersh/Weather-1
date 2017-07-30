@@ -12,6 +12,13 @@ public class GeometryDto {
     @Expose
     private LocationDto location;
 
+    public GeometryDto() {
+    }
+
+    public GeometryDto(LocationDto location) {
+        this.location = location;
+    }
+
     public LocationDto getLocation() {
         return location;
     }

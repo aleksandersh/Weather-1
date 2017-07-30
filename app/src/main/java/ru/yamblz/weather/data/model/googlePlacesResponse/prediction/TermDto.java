@@ -17,6 +17,14 @@ public class TermDto {
     @Expose
     private String value;
 
+    public TermDto() {
+    }
+
+    public TermDto(Integer offset, String value) {
+        this.offset = offset;
+        this.value = value;
+    }
+
     public Integer getOffset() {
         return offset;
     }

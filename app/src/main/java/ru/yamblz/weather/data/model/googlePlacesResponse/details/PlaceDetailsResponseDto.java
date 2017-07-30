@@ -15,6 +15,14 @@ public class PlaceDetailsResponseDto {
     @Expose
     private String status;
 
+    public PlaceDetailsResponseDto() {
+    }
+
+    public PlaceDetailsResponseDto(PlaceDetailsDto placeDetails, String status) {
+        this.placeDetails = placeDetails;
+        this.status = status;
+    }
+
     public PlaceDetailsDto getPlaceDetails() {
         return placeDetails;
     }

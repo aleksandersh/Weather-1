@@ -36,6 +36,16 @@ public interface CitiesContract {
          * Вывести ошибку.
          */
         void showError(@StringRes int stringResId);
+
+        /**
+         * Показать контент фрагмента.
+         */
+        void showContent();
+
+        /**
+         * Скрыть контент фрагмента.
+         */
+        void hideContent();
     }
 
     interface CitiesPresenter extends MvpPresenter<CitiesView> {

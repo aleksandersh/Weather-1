@@ -9,7 +9,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.ReplaySubject;
 import ru.yamblz.weather.BuildConfig;
 import ru.yamblz.weather.data.SchedulerProvider;
+import ru.yamblz.weather.data.local.AppPreferenceManager;
 import ru.yamblz.weather.data.local.LocalService;
+import ru.yamblz.weather.data.model.places.Location;
 import ru.yamblz.weather.data.model.response.WeatherResponse;
 import ru.yamblz.weather.data.network.Api;
 import ru.yamblz.weather.utils.GlobalConstants;
@@ -22,6 +24,7 @@ public class OverviewUseCaseImpl implements OverviewUseCase {
     private LocalService localService;
     private RxBus rxBus;
     private SchedulerProvider schedulerProvider;
+    private AppPreferenceManager appPreferenceManager;
 
     private Disposable weatherDisposable;
     private ReplaySubject<WeatherResponse> weatherReplaySubject;
@@ -31,16 +34,17 @@ public class OverviewUseCaseImpl implements OverviewUseCase {
     OverviewUseCaseImpl(Api api,
                         LocalService localService,
                         RxBus rxBus,
-                        SchedulerProvider schedulerProvider) {
+                        SchedulerProvider schedulerProvider,
+                        AppPreferenceManager preferenceManager) {
         this.api = api;
         this.localService = localService;
         this.rxBus = rxBus;
         this.schedulerProvider = schedulerProvider;
+        this.appPreferenceManager = preferenceManager;
     }
 
     @Override
     public Observable<WeatherResponse> loadCurrentWeather(double lat, double lng, boolean force) {
-        // TODO: 27.07.2017 Придумать как определять подходящую локацию. Сравнение широты и долготы не катит.
         if (cache != null
                 && weatherReplaySubject != null
                 && !weatherReplaySubject.hasValue()
@@ -64,6 +68,11 @@ public class OverviewUseCaseImpl implements OverviewUseCase {
                     .subscribe(weatherReplaySubject::onNext, weatherReplaySubject::onError);
         }
         return weatherReplaySubject;
+    }
+
+    @Override
+    public Single<Location> getCurrentLocation() {
+        return Single.fromCallable(() -> appPreferenceManager.getLocation());
     }
 
     private Single<WeatherResponse> network(double lat, double lng) {

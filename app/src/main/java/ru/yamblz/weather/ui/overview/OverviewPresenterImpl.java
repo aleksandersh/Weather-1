@@ -14,12 +14,10 @@ import ru.yamblz.weather.ui.base.BasePresenter;
 public class OverviewPresenterImpl extends BasePresenter<OverviewContract.OverviewView> implements OverviewContract.OverviewPresenter {
 
     private OverviewUseCase useCase;
-    private AppPreferenceManager preferenceManager;
 
     @Inject
-    public OverviewPresenterImpl(OverviewUseCase useCase, AppPreferenceManager preferenceManager) {
+    public OverviewPresenterImpl(OverviewUseCase useCase) {
         this.useCase = useCase;
-        this.preferenceManager = preferenceManager;
     }
 
     @Override
@@ -43,12 +41,14 @@ public class OverviewPresenterImpl extends BasePresenter<OverviewContract.Overvi
     @Override
     public void requestInitialData() {
         getView().showLoading();
-        Single.fromCallable(() -> preferenceManager.getLocation())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(location -> {
-                    getView().hideLoading();
-                    getView().setCurrentLocation(location);
-                });
+        getCompositeDisposable().add(
+                useCase.getCurrentLocation()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(location -> {
+                            getView().hideLoading();
+                            getView().setCurrentLocation(location);
+                        })
+        );
     }
 }

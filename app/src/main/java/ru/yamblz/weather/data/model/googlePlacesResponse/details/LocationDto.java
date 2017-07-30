@@ -15,6 +15,14 @@ public class LocationDto {
     @Expose
     private Double lng;
 
+    public LocationDto() {
+    }
+
+    public LocationDto(Double lat, Double lng) {
+        this.lat = lat;
+        this.lng = lng;
+    }
+
     public Double getLat() {
         return lat;
     }

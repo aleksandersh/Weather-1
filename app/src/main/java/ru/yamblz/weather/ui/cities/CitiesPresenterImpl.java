@@ -1,15 +1,15 @@
 package ru.yamblz.weather.ui.cities;
 
+import android.support.annotation.NonNull;
+
 import java.io.IOException;
 import java.util.Collections;
 
 import javax.inject.Inject;
 
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import ru.yamblz.weather.R;
-import ru.yamblz.weather.data.local.AppPreferenceManager;
 import ru.yamblz.weather.data.model.places.PlacePrediction;
 import ru.yamblz.weather.data.usecase.places.CitiesUseCase;
 import ru.yamblz.weather.data.usecase.places.GooglePlacesException;
@@ -24,14 +24,13 @@ import ru.yamblz.weather.ui.base.BasePresenter;
 public class CitiesPresenterImpl extends BasePresenter<CitiesContract.CitiesView>
         implements CitiesContract.CitiesPresenter {
     private CitiesUseCase mPlacesUseCase;
-    private AppPreferenceManager mPreferenceManager;
 
     @Inject
-    public CitiesPresenterImpl(CitiesUseCase placesUseCase, AppPreferenceManager preferenceManager) {
+    public CitiesPresenterImpl(CitiesUseCase placesUseCase) {
         mPlacesUseCase = placesUseCase;
-        mPreferenceManager = preferenceManager;
     }
 
+    @NonNull
     @Override
     public void requestPredictions(String text) {
         getCompositeDisposable().clear();
@@ -55,15 +54,21 @@ public class CitiesPresenterImpl extends BasePresenter<CitiesContract.CitiesView
 
     @Override
     public void requestInitialData() {
-        Single.fromCallable(() -> mPreferenceManager.getLocation())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(location -> getView().setCurrentLocation(location));
+        getView().hideContent();
+        getCompositeDisposable().add(
+                mPlacesUseCase.getCurrentLocation()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(location -> {
+                            getView().setCurrentLocation(location);
+                            getView().showContent();
+                        })
+        );
     }
 
     @Override
     public void setCurrentLocationByPrediction(PlacePrediction prediction) {
-        getCompositeDisposable().clear();
+        getView().hideContent();
         getCompositeDisposable().add(mPlacesUseCase.setCurrentLocationByPrediction(prediction)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -78,6 +83,7 @@ public class CitiesPresenterImpl extends BasePresenter<CitiesContract.CitiesView
     }
 
     private void showErrorByThrowable(Throwable throwable) {
+        getView().showContent();
         if (throwable instanceof GooglePlacesException) {
             GooglePlacesException gpe = (GooglePlacesException) throwable;
             getView().showError(gpe.getDescriptionResId());

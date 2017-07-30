@@ -32,7 +32,9 @@ public class GooglePlacesException extends RuntimeException {
         ZERO_RESULTS(R.string.error_places_zero_results),
         OVER_QUERY_LIMIT(R.string.error_places_over_query_limit),
         REQUEST_DENIED(R.string.error_places_request_denied),
-        INVALID_REQUEST(R.string.error_places_invalid_request);
+        INVALID_REQUEST(R.string.error_places_invalid_request),
+        NOT_FOUND(R.string.error_places_not_found),
+        UNKNOWN_ERROR(R.string.error_places_unknown_error);
 
         @StringRes
         int descriptionResId;
