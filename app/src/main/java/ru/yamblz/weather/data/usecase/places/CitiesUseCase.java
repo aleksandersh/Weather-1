@@ -1,4 +1,4 @@
-package ru.yamblz.weather.data.usecase;
+package ru.yamblz.weather.data.usecase.places;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import ru.yamblz.weather.data.model.places.PlacePrediction;
  * Created by AleksanderSh on 27.07.2017.
  */
 
-public interface GooglePlacesUseCase {
+public interface CitiesUseCase {
     /**
      * Получение предполагаемых городов по тексту.
      *

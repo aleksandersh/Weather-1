@@ -1,5 +1,7 @@
 package ru.yamblz.weather.ui.cities;
 
+import android.support.annotation.StringRes;
+
 import java.util.List;
 
 import ru.yamblz.weather.data.model.places.Location;
@@ -33,7 +35,7 @@ public interface CitiesContract {
         /**
          * Вывести ошибку.
          */
-        void showError();
+        void showError(@StringRes int stringResId);
     }
 
     interface CitiesPresenter extends MvpPresenter<CitiesView> {

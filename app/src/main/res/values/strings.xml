@@ -36,4 +36,11 @@
     <string name="cities_search_image">Search</string>
     <string name="cities_search_hint">Specify the location</string>
     <string name="cities_clear_button">Clear text</string>
+
+    <!--Places errors-->
+    <string name="error_http_io">Connection is not available</string>
+    <string name="error_places_zero_results">Search returned no results</string>
+    <string name="error_places_over_query_limit">Exceeding the quota</string>
+    <string name="error_places_request_denied">Request was denied</string>
+    <string name="error_places_invalid_request">Invalid request</string>
 </resources>

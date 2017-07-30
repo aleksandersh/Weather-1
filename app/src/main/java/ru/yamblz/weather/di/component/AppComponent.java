@@ -5,7 +5,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 import ru.yamblz.weather.data.local.AppPreferenceManager;
 import ru.yamblz.weather.data.network.NetworkModule;
-import ru.yamblz.weather.data.usecase.GooglePlacesUseCase;
+import ru.yamblz.weather.data.usecase.places.CitiesUseCase;
 import ru.yamblz.weather.data.usecase.OverviewUseCase;
 import ru.yamblz.weather.di.module.AppModule;
 import ru.yamblz.weather.di.module.GooglePlacesModule;
@@ -20,5 +20,5 @@ public interface AppComponent {
     Converter converter();
     AppPreferenceManager preferenceManager();
     OverviewUseCase overviewUseCase();
-    GooglePlacesUseCase googlePlacesUseCase();
+    CitiesUseCase googlePlacesUseCase();
 }

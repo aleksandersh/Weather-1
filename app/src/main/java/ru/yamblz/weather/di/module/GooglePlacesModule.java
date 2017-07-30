@@ -12,8 +12,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import ru.yamblz.weather.BuildConfig;
 import ru.yamblz.weather.data.local.AppPreferenceManager;
 import ru.yamblz.weather.data.network.GooglePlacesApi;
-import ru.yamblz.weather.data.usecase.GooglePlacesUseCase;
-import ru.yamblz.weather.data.usecase.GooglePlacesUseCaseImpl;
+import ru.yamblz.weather.data.usecase.places.CitiesUseCase;
+import ru.yamblz.weather.data.usecase.places.GooglePlacesUseCaseImpl;
 
 /**
  * Created by AleksanderSh on 25.07.2017.
@@ -41,8 +41,8 @@ public class GooglePlacesModule {
 
     @Singleton
     @Provides
-    GooglePlacesUseCase provideGooglePlacesUseCase(GooglePlacesApi api,
-                                                   AppPreferenceManager preferenceManager) {
+    CitiesUseCase provideGooglePlacesUseCase(GooglePlacesApi api,
+                                             AppPreferenceManager preferenceManager) {
         return new GooglePlacesUseCaseImpl(api, preferenceManager);
     }
 }

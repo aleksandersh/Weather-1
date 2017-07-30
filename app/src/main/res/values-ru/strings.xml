@@ -34,4 +34,11 @@
     <string name="cities_search_image">Поиск</string>
     <string name="cities_search_hint">Укажите местоположение</string>
     <string name="cities_clear_button">Очистить текст</string>
+
+    <!--Places errors-->
+    <string name="error_http_io">Соединение не доступно</string>
+    <string name="error_places_zero_results">Поиск не дал результатов</string>
+    <string name="error_places_over_query_limit">Превышение квоты</string>
+    <string name="error_places_request_denied">Запрос отклонен</string>
+    <string name="error_places_invalid_request">Недопустимый запрос</string>
 </resources>

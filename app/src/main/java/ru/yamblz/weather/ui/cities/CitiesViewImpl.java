@@ -3,6 +3,7 @@ package ru.yamblz.weather.ui.cities;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
@@ -94,10 +96,9 @@ public class CitiesViewImpl extends BaseFragment implements CitiesContract.Citie
     }
 
     @Override
-    public void showError() {
+    public void showError(@StringRes int stringResId) {
         showContent();
-        // TODO: 26.07.2017 Вывод ошибки
-        Log.d(TAG, "showError: Error!");
+        Toast.makeText(getActivity(), stringResId, Toast.LENGTH_SHORT).show();
     }
 
     @Override

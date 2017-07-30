@@ -1,6 +1,7 @@
-package ru.yamblz.weather.data.usecase;
+package ru.yamblz.weather.data.usecase.places;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,10 +24,14 @@ import ru.yamblz.weather.data.network.GooglePlacesApi;
  * Created by AleksanderSh on 25.07.2017.
  */
 
-public class GooglePlacesUseCaseImpl implements GooglePlacesUseCase {
+public class GooglePlacesUseCaseImpl implements CitiesUseCase {
     private static final String TAG = "GooglePlacesUseCaseImpl";
     private static final String PLACE_TYPE = "(cities)";
     private static final String STATUS_OK = "OK";
+    private static final String STATUS_ZERO_RESULTS = "ZERO_RESULTS";
+    private static final String STATUS_OVER_QUERY_LIMIT = "OVER_QUERY_LIMIT";
+    private static final String STATUS_REQUEST_DENIED = "REQUEST_DENIED";
+    private static final String STATUS_INVALID_REQUEST = "INVALID_REQUEST";
 
     private GooglePlacesApi mPlacesApi;
     private AppPreferenceManager mPreferenceManager;
@@ -40,13 +45,29 @@ public class GooglePlacesUseCaseImpl implements GooglePlacesUseCase {
     @Override
     public Single<List<PlacePrediction>> loadPlacePredictions(String text) {
         return mPlacesApi.getPredictions(BuildConfig.GOOGLE_PLACES_API_KEY, text, PLACE_TYPE)
-                .subscribeOn(Schedulers.io())
                 .flatMap(responseDto ->
                         Single.create(subscriber -> {
-                            if (responseDto.getStatus().equals(STATUS_OK)) {
-                                subscriber.onSuccess(predictionsFromResponseDto(responseDto));
-                            } else {
-                                subscriber.onError(null);
+                            switch (responseDto.getStatus()) {
+                                case STATUS_OK:
+                                    subscriber.onSuccess(predictionsFromResponseDto(responseDto));
+                                    break;
+                                case STATUS_ZERO_RESULTS:
+                                    subscriber.onSuccess(Collections.emptyList());
+                                    break;
+                                case STATUS_OVER_QUERY_LIMIT:
+                                    subscriber.onError(new GooglePlacesException(
+                                            GooglePlacesException.ErrorDescription.OVER_QUERY_LIMIT));
+                                    break;
+                                case STATUS_REQUEST_DENIED:
+                                    subscriber.onError(new GooglePlacesException(
+                                            GooglePlacesException.ErrorDescription.REQUEST_DENIED));
+                                    break;
+                                case STATUS_INVALID_REQUEST:
+                                    subscriber.onError(new GooglePlacesException(
+                                            GooglePlacesException.ErrorDescription.INVALID_REQUEST));
+                                    break;
+                                default:
+                                    subscriber.onError(null);
                             }
                         })
                 );
