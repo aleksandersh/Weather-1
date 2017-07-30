@@ -30,9 +30,8 @@ public class CitiesPresenterImpl extends BasePresenter<CitiesContract.CitiesView
         mPlacesUseCase = placesUseCase;
     }
 
-    @NonNull
     @Override
-    public void requestPredictions(String text) {
+    public void requestPredictions(@NonNull String text) {
         getCompositeDisposable().clear();
         if (text.length() > 0) {
             getCompositeDisposable().add(
@@ -60,9 +59,12 @@ public class CitiesPresenterImpl extends BasePresenter<CitiesContract.CitiesView
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(location -> {
-                            getView().setCurrentLocation(location);
-                            getView().showContent();
-                        })
+                                    getView().setCurrentLocation(location);
+                                    getView().showContent();
+                                },
+                                throwable -> {
+                                    getView().showContent();
+                                })
         );
     }
 
@@ -74,7 +76,10 @@ public class CitiesPresenterImpl extends BasePresenter<CitiesContract.CitiesView
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         () -> getView().onSelectionSuccessful(),
-                        this::showErrorByThrowable
+                        throwable -> {
+                            getView().showContent();
+                            showErrorByThrowable(throwable);
+                        }
                 ));
     }
 
@@ -83,7 +88,6 @@ public class CitiesPresenterImpl extends BasePresenter<CitiesContract.CitiesView
     }
 
     private void showErrorByThrowable(Throwable throwable) {
-        getView().showContent();
         if (throwable instanceof GooglePlacesException) {
             GooglePlacesException gpe = (GooglePlacesException) throwable;
             getView().showError(gpe.getDescriptionResId());
