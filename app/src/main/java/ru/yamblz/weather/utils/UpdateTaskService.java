@@ -9,9 +9,7 @@ import com.google.android.gms.gcm.TaskParams;
 
 import javax.inject.Inject;
 
-import io.reactivex.Single;
 import ru.yamblz.weather.BuildConfig;
-import ru.yamblz.weather.data.local.AppPreferenceManager;
 import ru.yamblz.weather.data.local.LocalService;
 import ru.yamblz.weather.data.network.Api;
 import ru.yamblz.weather.di.component.DaggerBackgroundComponent;
@@ -29,9 +27,6 @@ public class UpdateTaskService extends GcmTaskService {
     @Inject
     LocalService localService;
 
-    @Inject
-    AppPreferenceManager preferenceManager;
-
     private int result;
 
     @Override
@@ -39,19 +34,14 @@ public class UpdateTaskService extends GcmTaskService {
         inject();
         result = GcmNetworkManager.RESULT_SUCCESS;
         Log.d(TAG, "taskIsRunning");
-
-        Single.fromCallable(preferenceManager::getLocation)
-                .map(location -> api.getWeather(BuildConfig.API_KEY,
-                        location.getLatitude(), location.getLongitude())
-                        .doOnSuccess(localService::writeResponseToFile)
-                        .subscribe(
-                                weatherResponse -> result = GcmNetworkManager.RESULT_SUCCESS,
-                                err -> {
-                                    result = GcmNetworkManager.RESULT_FAILURE;
-                                    Log.d(TAG_LOG, err.getMessage());
-                                })
-                );
-
+        api.getWeather(BuildConfig.API_KEY, 55.751244, 37.618423)
+                .doOnSuccess(localService::writeResponseToFile)
+                .subscribe(
+                        weatherResponse -> result = GcmNetworkManager.RESULT_SUCCESS,
+                        err -> {
+                            result = GcmNetworkManager.RESULT_FAILURE;
+                            Log.d(TAG_LOG, err.getMessage());
+                        });
         return result;
     }
 

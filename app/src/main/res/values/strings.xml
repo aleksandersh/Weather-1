@@ -30,19 +30,4 @@
 
     <!--About strings-->
     <string name="about_title">About</string>
-
-    <!--Cities-->
-    <string name="cities_title">Location selection</string>
-    <string name="cities_search_image">Search</string>
-    <string name="cities_search_hint">Specify the location</string>
-    <string name="cities_clear_button">Clear text</string>
-
-    <!--Places errors-->
-    <string name="error_http_io">Connection is not available</string>
-    <string name="error_places_zero_results">Search returned no results</string>
-    <string name="error_places_over_query_limit">Exceeding the quota</string>
-    <string name="error_places_request_denied">Request was denied</string>
-    <string name="error_places_invalid_request">Invalid request</string>
-    <string name="error_places_not_found">Referenced location was not found</string>
-    <string name="error_places_unknown_error">Server-side error</string>
 </resources>

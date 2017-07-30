@@ -7,10 +7,6 @@
             android:title="@string/overview_title"
             android:icon="@drawable/ic_cloud_black_24dp"/>
         <item
-            android:id="@+id/nav_cities"
-            android:title="@string/cities_title"
-            android:icon="@drawable/ic_cities"/>
-        <item
             android:id="@+id/nav_settings"
             android:title="@string/settings_title"
             android:icon="@drawable/ic_settings_black_24dp"/>

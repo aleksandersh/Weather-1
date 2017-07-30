@@ -32,7 +32,6 @@ ext {
     dagger = '2.11'
     rxjava = '2.1.1'
     rxandroid = '2.0.1'
-    rxbinding = '2.0.0'
     retrofit = '2.3.0'
     okhttp = '3.8.1'
     icepick = '3.2.0'
