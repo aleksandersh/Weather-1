@@ -1,4 +1,4 @@
-package ru.yamblz.weather.data.network;
+package ru.yamblz.weather.data.network.googlePlaces;
 
 import io.reactivex.Single;
 import retrofit2.http.GET;
@@ -31,9 +31,11 @@ public interface GooglePlacesApi {
      *
      * @param apiKey  Google places Api Key.
      * @param placeId Однозначный идентификатор места в сервиса Google Places.
+     * @param lang    Язык, на котором следует получить результат.
      * @return Rx-источик для ответа сервиса.
      */
     @GET("details/json")
     Single<PlaceDetailsResponseDto> getPlaceDetails(@Query("key") String apiKey,
-                                                    @Query("placeid") String placeId);
+                                                    @Query("placeid") String placeId,
+                                                    @Query("language") String lang);
 }

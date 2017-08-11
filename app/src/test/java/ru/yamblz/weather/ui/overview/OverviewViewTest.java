@@ -18,11 +18,11 @@ public class OverviewViewTest {
     @Test
     @Ignore("Локация может быть не задана")
     public void requestDataOnRefresh() {
-        OverviewViewImpl view = new OverviewViewImpl();
-        OverviewPresenterImpl presenter = mock(OverviewPresenterImpl.class);
-
-        view.presenter = presenter;
-        view.onRefresh();
-        verify(presenter).requestCurrentWeather(anyDouble(), anyDouble(), eq(true));
+//        OverviewViewImpl view = new OverviewViewImpl();
+//        OverviewPresenterImpl presenter = mock(OverviewPresenterImpl.class);
+//
+//        view.presenter = presenter;
+//        view.onRefresh();
+//        verify(presenter).requestCurrentWeather(anyDouble(), anyDouble(), eq(true));
     }
 }

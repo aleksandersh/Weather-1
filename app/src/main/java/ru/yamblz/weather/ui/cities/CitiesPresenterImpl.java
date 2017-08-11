@@ -1,5 +1,6 @@
 package ru.yamblz.weather.ui.cities;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import java.io.IOException;
@@ -13,25 +14,24 @@ import ru.yamblz.weather.R;
 import ru.yamblz.weather.data.model.places.PlacePrediction;
 import ru.yamblz.weather.data.usecase.places.CitiesUseCase;
 import ru.yamblz.weather.data.usecase.places.GooglePlacesException;
+import ru.yamblz.weather.di.ActivityContext;
 import ru.yamblz.weather.di.scope.PerActivity;
 import ru.yamblz.weather.ui.base.BasePresenter;
-
-/**
- * Created by AleksanderSh on 26.07.2017.
- */
 
 @PerActivity
 public class CitiesPresenterImpl extends BasePresenter<CitiesContract.CitiesView>
         implements CitiesContract.CitiesPresenter {
     private CitiesUseCase mPlacesUseCase;
+    private Context mContext;
 
     @Inject
-    public CitiesPresenterImpl(CitiesUseCase placesUseCase) {
+    public CitiesPresenterImpl(CitiesUseCase placesUseCase, @ActivityContext Context context) {
         mPlacesUseCase = placesUseCase;
+        mContext = context;
     }
 
     @Override
-    public void requestPredictions(@NonNull String text) {
+    public void onSearchTextChanged(@NonNull String text) {
         getCompositeDisposable().clear();
         if (text.length() > 0) {
             getCompositeDisposable().add(
@@ -52,14 +52,16 @@ public class CitiesPresenterImpl extends BasePresenter<CitiesContract.CitiesView
     }
 
     @Override
-    public void requestInitialData() {
+    public void onViewCreated() {
         getView().hideContent();
+        String lang = mContext.getString(R.string.api_language_value);
         getCompositeDisposable().add(
-                mPlacesUseCase.getCurrentLocation()
+                mPlacesUseCase.getCurrentCity(lang)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(location -> {
-                                    getView().setCurrentLocation(location);
+                        .subscribe(
+                                city -> {
+                                    getView().setSearchText(city.getName());
                                     getView().showContent();
                                 },
                                 throwable -> {
@@ -69,9 +71,10 @@ public class CitiesPresenterImpl extends BasePresenter<CitiesContract.CitiesView
     }
 
     @Override
-    public void setCurrentLocationByPrediction(PlacePrediction prediction) {
+    public void onPredictionSelected(PlacePrediction prediction) {
         getView().hideContent();
-        getCompositeDisposable().add(mPlacesUseCase.setCurrentLocationByPrediction(prediction)
+        String lang = mContext.getString(R.string.api_language_value);
+        getCompositeDisposable().add(mPlacesUseCase.setCurrentLocationByPrediction(prediction, lang)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

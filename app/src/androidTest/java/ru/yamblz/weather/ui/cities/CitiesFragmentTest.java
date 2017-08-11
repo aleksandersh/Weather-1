@@ -30,7 +30,7 @@ public class CitiesFragmentTest {
     @Before
     public void setUp() {
         AppPreferenceManager preferenceManager = new AppPreferenceManager();
-        currentCity = preferenceManager.getLocation().getTitle();
+//        currentCity = preferenceManager.getLocation().getTitle();
     }
 
     @Test

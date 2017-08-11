@@ -20,6 +20,7 @@ import io.reactivex.Single;
 import ru.yamblz.weather.data.model.response.WeatherResponse;
 import ru.yamblz.weather.di.ApplicationContext;
 
+@Deprecated
 @Singleton
 public class LocalService {
 
@@ -46,7 +47,8 @@ public class LocalService {
     }
 
     private WeatherResponse readFile() throws IOException {
-        Type postsResponseType = new TypeToken<WeatherResponse>(){}.getType();
+        Type postsResponseType = new TypeToken<WeatherResponse>() {
+        }.getType();
         String line;
         StringBuilder jsonString = new StringBuilder();
 

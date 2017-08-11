@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,7 +78,7 @@ public class CitiesViewImpl extends BaseFragment implements CitiesContract.Citie
         setupRecyclerView();
         setupSearchInput();
 
-        mPresenter.requestInitialData();
+        mPresenter.onViewCreated();
     }
 
     @Override
@@ -121,7 +122,11 @@ public class CitiesViewImpl extends BaseFragment implements CitiesContract.Citie
 
     @Override
     public void setCurrentLocation(Location location) {
-        mSearchInput.setText(location.getTitle());
+    }
+
+    @Override
+    public void setSearchText(String text) {
+        mSearchInput.setText(text);
     }
 
     @Override
@@ -158,7 +163,7 @@ public class CitiesViewImpl extends BaseFragment implements CitiesContract.Citie
                 .debounce(DELAY_TIME_MILLIS, TimeUnit.MILLISECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(charSequence -> mPresenter.requestPredictions(charSequence.toString()));
+                .subscribe(charSequence -> mPresenter.onSearchTextChanged(charSequence.toString()));
     }
 
     class CitiesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -166,8 +171,10 @@ public class CitiesViewImpl extends BaseFragment implements CitiesContract.Citie
 
         @BindView(R.id.city_text_view)
         TextView mCityTextView;
+        @BindView(R.id.city_favorite_mark_color)
+        ImageView mImageView;
 
-        public CitiesViewHolder(View itemView) {
+        CitiesViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
@@ -175,12 +182,13 @@ public class CitiesViewImpl extends BaseFragment implements CitiesContract.Citie
 
         @Override
         public void onClick(View view) {
-            mPresenter.setCurrentLocationByPrediction(mPrediction);
+            mPresenter.onPredictionSelected(mPrediction);
         }
 
-        public void bindItem(PlacePrediction prediction) {
+        void bindItem(PlacePrediction prediction) {
             mPrediction = prediction;
             mCityTextView.setText(prediction.getText());
+            if (prediction.isFavorite()) mImageView.setImageResource(R.color.colorAccent);
         }
     }
 
@@ -204,7 +212,7 @@ public class CitiesViewImpl extends BaseFragment implements CitiesContract.Citie
             return mPlacePredictions.size();
         }
 
-        public void setPlacePredictions(List<PlacePrediction> placePredictions) {
+        void setPlacePredictions(List<PlacePrediction> placePredictions) {
             mPlacePredictions = placePredictions;
         }
     }

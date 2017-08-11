@@ -1,5 +1,6 @@
 package ru.yamblz.weather.ui.cities;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import org.junit.AfterClass;
@@ -21,7 +22,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.internal.schedulers.ExecutorScheduler;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.TestScheduler;
-import ru.yamblz.weather.data.model.places.Location;
+import ru.yamblz.weather.data.model.places.City;
+import ru.yamblz.weather.data.model.places.CityBuilder;
 import ru.yamblz.weather.data.model.places.PlacePrediction;
 import ru.yamblz.weather.data.usecase.places.CitiesUseCase;
 import ru.yamblz.weather.data.usecase.places.GooglePlacesException;
@@ -33,17 +35,16 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by AleksanderSh on 30.07.2017.
- */
 public class CitiesPresenterImplTest {
     @Mock
-    private CitiesUseCase mUseCase;
+    private CitiesUseCase useCase;
     @Mock
-    private CitiesContract.CitiesView mView;
+    private CitiesContract.CitiesView view;
+    @Mock
+    private Context context;
 
-    private CitiesContract.CitiesPresenter mPresenter;
-    private TestScheduler mScheduler;
+    private CitiesContract.CitiesPresenter presenter;
+    private TestScheduler scheduler;
 
     @BeforeClass
     public static void setUpRxSchedulers() {
@@ -70,9 +71,9 @@ public class CitiesPresenterImplTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        mPresenter = new CitiesPresenterImpl(mUseCase);
-        mPresenter.onAttach(mView);
-        mScheduler = new TestScheduler();
+        presenter = new CitiesPresenterImpl(useCase, context);
+        presenter.onAttach(view);
+        scheduler = new TestScheduler();
     }
 
     @AfterClass
@@ -82,65 +83,71 @@ public class CitiesPresenterImplTest {
     }
 
     @Test
-    public void requestPredictionsCorrect() {
+    public void onSearchTextChangedCorrect() {
         List<PlacePrediction> predictions = new ArrayList<>(1);
-        predictions.add(new PlacePrediction("1", "Moscow", "Moscow, Russia"));
+        predictions.add(new PlacePrediction("1", "Moscow", false));
 
         Single<List<PlacePrediction>> single = Single.just(predictions);
-        when(mUseCase.loadPlacePredictions(anyString())).thenReturn(single.subscribeOn(mScheduler));
+        when(useCase.loadPlacePredictions(anyString())).thenReturn(single.subscribeOn(scheduler));
 
-        mPresenter.requestPredictions("Moscow");
+        presenter.onSearchTextChanged("Moscow");
 
-        mScheduler.triggerActions();
+        scheduler.triggerActions();
 
-        verify(mView).showPredictions(predictions);
-        verify(mView, never()).showError(anyInt());
+        verify(view).showPredictions(predictions);
+        verify(view, never()).showError(anyInt());
     }
 
     @Test
-    public void requestPredictionsIncorrect() {
-        Single<List<PlacePrediction>> single = Single.error(new GooglePlacesException(
-                GooglePlacesException.ErrorDescription.REQUEST_DENIED));
-        when(mUseCase.loadPlacePredictions(anyString())).thenReturn(single.subscribeOn(mScheduler));
+    public void onSearchTextChangedIncorrect() {
+        GooglePlacesException exception = new GooglePlacesException(
+                GooglePlacesException.ErrorDescription.REQUEST_DENIED);
 
-        mPresenter.requestPredictions("Moscow");
+        Single<List<PlacePrediction>> single = Single.error(exception);
+        when(useCase.loadPlacePredictions(anyString())).thenReturn(single.subscribeOn(scheduler));
 
-        mScheduler.triggerActions();
+        presenter.onSearchTextChanged("Moscow");
 
-        verify(mView).showError(anyInt());
+        scheduler.triggerActions();
+
+        verify(view).showError(exception.getDescriptionResId());
     }
 
     @Test
-    public void requestInitialData() {
-        Location location = new Location("Moscow", 35, 45);
-        Single<Location> single = Single.just(location);
+    public void onViewCreated() {
+        final String cityName = "Moscow";
 
-        when(mUseCase.getCurrentLocation()).thenReturn(single.subscribeOn(mScheduler));
+        City city = new CityBuilder()
+                .setName(cityName)
+                .build();
+        Single<City> single = Single.just(city);
 
-        mPresenter.requestInitialData();
+        when(useCase.getCurrentCity(anyString())).thenReturn(single.subscribeOn(scheduler));
 
-        verify(mView).hideContent();
+        presenter.onViewCreated();
 
-        mScheduler.triggerActions();
+        verify(view).hideContent();
 
-        verify(mView).showContent();
-        verify(mView).setCurrentLocation(location);
+        scheduler.triggerActions();
+
+        verify(view).showContent();
+        verify(view).setSearchText(cityName);
     }
 
     @Test
     public void setCurrentLocationByPredictionCorrect() {
         Completable completable = Completable.complete();
 
-        when(mUseCase.setCurrentLocationByPrediction(any()))
-                .thenReturn(completable.subscribeOn(mScheduler));
+        when(useCase.setCurrentLocationByPrediction(any(), anyString()))
+                .thenReturn(completable.subscribeOn(scheduler));
 
-        mPresenter.setCurrentLocationByPrediction(new PlacePrediction("id", "name", "text"));
+        presenter.onPredictionSelected(new PlacePrediction("id", "name", false));
 
-        verify(mView).hideContent();
+        verify(view).hideContent();
 
-        mScheduler.triggerActions();
+        scheduler.triggerActions();
 
-        verify(mView).onSelectionSuccessful();
+        verify(view).onSelectionSuccessful();
     }
 
     @Test
@@ -149,16 +156,16 @@ public class CitiesPresenterImplTest {
                 new GooglePlacesException(GooglePlacesException.ErrorDescription.NOT_FOUND);
         Completable completable = Completable.error(exception);
 
-        when(mUseCase.setCurrentLocationByPrediction(any()))
-                .thenReturn(completable.subscribeOn(mScheduler));
+        when(useCase.setCurrentLocationByPrediction(any(), anyString()))
+                .thenReturn(completable.subscribeOn(scheduler));
 
-        mPresenter.setCurrentLocationByPrediction(new PlacePrediction("id", "name", "text"));
+        presenter.onPredictionSelected(new PlacePrediction("id", "name", false));
 
-        verify(mView).hideContent();
+        verify(view).hideContent();
 
-        mScheduler.triggerActions();
+        scheduler.triggerActions();
 
-        verify(mView).showContent();
-        verify(mView).showError(exception.getDescriptionResId());
+        verify(view).showContent();
+        verify(view).showError(exception.getDescriptionResId());
     }
 }

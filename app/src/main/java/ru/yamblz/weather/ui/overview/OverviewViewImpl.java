@@ -17,6 +17,7 @@ import ru.yamblz.weather.R;
 import ru.yamblz.weather.data.model.places.Location;
 import ru.yamblz.weather.data.model.response.Currently;
 import ru.yamblz.weather.data.model.response.WeatherResponse;
+import ru.yamblz.weather.data.model.weather.Weather;
 import ru.yamblz.weather.ui.base.BaseFragment;
 import ru.yamblz.weather.ui.main.MainActivity;
 import ru.yamblz.weather.utils.Converter;
@@ -79,7 +80,7 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
 
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        presenter.requestInitialData();
+        presenter.onViewCreated();
     }
 
     @Override
@@ -93,10 +94,9 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
     @Override
     public void onRefresh() {
         if (currentLocation != null) {
-            presenter.requestCurrentWeather(
-                    currentLocation.getLatitude(), currentLocation.getLongitude(), true);
+            presenter.requestWeather(currentLocation, true);
         } else {
-            presenter.requestInitialData();
+            presenter.onViewCreated();
         }
     }
 
@@ -113,8 +113,18 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
     }
 
     @Override
+    public void displayWeatherData(Weather weather) {
+        overviewContent.setVisibility(View.VISIBLE);
+        temperature.setText(getString(R.string.degree, converter.convertTemperature(weather.getTemperature())));
+        currentWeatherCondition.setText(weather.getCondition());
+        icon.setImageResource(converter.convertIconToRes(weather.getIcon()));
+        feelsLike.setText(getString(R.string.degree, converter.convertTemperature(weather.getApparent())));
+        humidity.setText(getString(R.string.percent, converter.convertToPercentage(weather.getHumidity())));
+        clouds.setText(getString(R.string.percent, converter.convertToPercentage(weather.getClouds())));
+    }
+
+    @Override
     public void displayCityName(String name) {
-        //noinspection ConstantConditions
         actionBar.setTitle(name);
     }
 
@@ -125,7 +135,9 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
 
     @Override
     public void showLoading() {
-        swipeRefreshLayout.setRefreshing(true);
+        if (!swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
     }
 
     @Override
@@ -135,9 +147,6 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
 
     @Override
     public void setCurrentLocation(Location location) {
-        // TODO: 27.07.2017 После добавления городов подгрузка данных из памяти может выдавать неверный результат.
-        presenter.requestCurrentWeather(location.getLatitude(), location.getLongitude(), true);
         currentLocation = location;
-        displayCityName(location.getTitle());
     }
 }

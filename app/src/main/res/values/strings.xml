@@ -36,6 +36,7 @@
     <string name="cities_search_image">Search</string>
     <string name="cities_search_hint">Specify the location</string>
     <string name="cities_clear_button">Clear text</string>
+    <string name="cities_unknown_city">Unknown</string>
 
     <!--Places errors-->
     <string name="error_http_io">Connection is not available</string>
@@ -45,4 +46,6 @@
     <string name="error_places_invalid_request">Invalid request</string>
     <string name="error_places_not_found">Referenced location was not found</string>
     <string name="error_places_unknown_error">Server-side error</string>
+
+    <string name="api_language_value">en</string>
 </resources>

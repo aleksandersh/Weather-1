@@ -12,6 +12,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.yamblz.weather.BuildConfig;
+import ru.yamblz.weather.data.model.converter.WeatherConverter;
 
 
 @Module
@@ -47,5 +48,17 @@ public class NetworkModule {
                 .addInterceptor(logging)
                 .connectTimeout(15, TimeUnit.SECONDS)
                 .build();
+    }
+
+    @Singleton
+    @Provides
+    WeatherApiClient provideWeatherApiClient(Api api, WeatherConverter converter) {
+        return new DarkSkyApiClient(api, converter);
+    }
+
+    @Singleton
+    @Provides
+    WeatherConverter provideWeatherConverter() {
+        return new WeatherConverter();
     }
 }

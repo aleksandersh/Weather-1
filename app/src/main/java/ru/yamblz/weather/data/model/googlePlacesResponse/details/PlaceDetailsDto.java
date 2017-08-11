@@ -3,10 +3,6 @@ package ru.yamblz.weather.data.model.googlePlacesResponse.details;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by AleksanderSh on 27.07.2017.
- */
-
 public class PlaceDetailsDto {
     @SerializedName("geometry")
     @Expose
@@ -14,6 +10,9 @@ public class PlaceDetailsDto {
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("formatted_address")
+    @Expose
+    private String address;
     @SerializedName("place_id")
     @Expose
     private String placeId;
@@ -24,9 +23,10 @@ public class PlaceDetailsDto {
     public PlaceDetailsDto() {
     }
 
-    public PlaceDetailsDto(GeometryDto geometry, String name, String placeId, String reference) {
+    public PlaceDetailsDto(GeometryDto geometry, String name, String address, String placeId, String reference) {
         this.geometry = geometry;
         this.name = name;
+        this.address = address;
         this.placeId = placeId;
         this.reference = reference;
     }
@@ -37,6 +37,10 @@ public class PlaceDetailsDto {
 
     public String getName() {
         return name;
+    }
+
+    public String getAddress() {
+        return address;
     }
 
     public String getPlaceId() {

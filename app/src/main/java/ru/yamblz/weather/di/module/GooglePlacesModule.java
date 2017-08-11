@@ -10,14 +10,14 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ru.yamblz.weather.BuildConfig;
+import ru.yamblz.weather.data.database.WeatherDao;
 import ru.yamblz.weather.data.local.AppPreferenceManager;
-import ru.yamblz.weather.data.network.GooglePlacesApi;
+import ru.yamblz.weather.data.model.converter.PlaceDetailsToCityConverter;
+import ru.yamblz.weather.data.network.PlacesApiClient;
+import ru.yamblz.weather.data.network.googlePlaces.GooglePlacesApi;
+import ru.yamblz.weather.data.network.googlePlaces.GooglePlacesClient;
 import ru.yamblz.weather.data.usecase.places.CitiesUseCase;
 import ru.yamblz.weather.data.usecase.places.GooglePlacesUseCaseImpl;
-
-/**
- * Created by AleksanderSh on 25.07.2017.
- */
 
 @Module
 public class GooglePlacesModule {
@@ -41,8 +41,21 @@ public class GooglePlacesModule {
 
     @Singleton
     @Provides
-    CitiesUseCase provideGooglePlacesUseCase(GooglePlacesApi api,
-                                             AppPreferenceManager preferenceManager) {
-        return new GooglePlacesUseCaseImpl(api, preferenceManager);
+    CitiesUseCase provideGooglePlacesUseCase(PlacesApiClient apiClient,
+                                             AppPreferenceManager preferenceManager,
+                                             WeatherDao dao) {
+        return new GooglePlacesUseCaseImpl(apiClient, preferenceManager, dao);
+    }
+
+    @Singleton
+    @Provides
+    PlaceDetailsToCityConverter providePlaceDetailsToCityConverter() {
+        return new PlaceDetailsToCityConverter();
+    }
+
+    @Singleton
+    @Provides
+    PlacesApiClient providePlacesClient(GooglePlacesApi api, PlaceDetailsToCityConverter converter) {
+        return new GooglePlacesClient(api, converter);
     }
 }
