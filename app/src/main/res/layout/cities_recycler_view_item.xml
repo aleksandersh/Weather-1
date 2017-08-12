@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="vertical">
+              android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/city_favorite_mark_color"
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        app:srcCompat="?android:attr/colorBackground"/>
 
     <TextView
         android:id="@+id/city_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:textSize="18sp"/>
+        android:textSize="18sp"
+        tools:text="Moscow"/>
 </LinearLayout>

@@ -44,8 +44,9 @@ public class WeatherAdvancedPutResolver extends PutResolver<Weather> {
         Long weatherId = putResult.insertedId();
         if (weatherId != null && forecastsOld != null) {
             final List<Forecast> forecasts = new ArrayList<>(forecastsOld.size());
-            forecastsOld.forEach(forecast ->
-                    forecasts.add(new ForecastBuilder(forecast).setWeatherId(weatherId).build()));
+            for (Forecast forecast : forecastsOld) {
+                forecasts.add(new ForecastBuilder(forecast).setWeatherId(weatherId).build());
+            }
 
             storIOSQLite.put()
                     .objects(forecasts)

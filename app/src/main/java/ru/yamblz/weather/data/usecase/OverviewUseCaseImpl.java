@@ -58,7 +58,6 @@ public class OverviewUseCaseImpl implements OverviewUseCase {
                     local(lat, lng, lang)
                             .onErrorResumeNext(network(lat, lng, lang))
                             .doOnSuccess(weather -> cache = weather);
-            single.compose(schedulerProvider.applyIoSchedulers());
         }
 
         return single;

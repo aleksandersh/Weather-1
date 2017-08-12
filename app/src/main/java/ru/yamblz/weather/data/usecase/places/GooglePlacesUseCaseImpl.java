@@ -1,5 +1,6 @@
 package ru.yamblz.weather.data.usecase.places;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -55,7 +56,7 @@ public class GooglePlacesUseCaseImpl implements CitiesUseCase {
                         }
                     }
 
-                    predictions.sort((p1, p2) -> {
+                    Collections.sort(predictions, (p1, p2) -> {
                         if (p1.isFavorite() && !p2.isFavorite()) return -1;
                         else if (!p1.isFavorite() && p2.isFavorite()) return 1;
                         else return 0;

@@ -19,6 +19,7 @@ import ru.yamblz.weather.data.model.weather.WeatherBuilder;
 
 public class DarkSkyApiClient implements WeatherApiClient {
     private static final String EXCLUDE_BLOCKS = "minutely,daily,alerts,flags";
+    private static final String EXTEND = "hourly";
 
     private Api api;
     private DtoToModelConverter<WeatherResponse, WeatherBuilder> weatherConverter;
@@ -30,7 +31,7 @@ public class DarkSkyApiClient implements WeatherApiClient {
     }
 
     public Single<Weather> getWeather(double lat, double lng, String lang) {
-        return api.getWeather(BuildConfig.API_KEY, lat, lng, lang, EXCLUDE_BLOCKS)
+        return api.getWeather(BuildConfig.API_KEY, lat, lng, lang, EXCLUDE_BLOCKS, EXTEND)
                 .flatMap(weatherResponse ->
                         Single.fromCallable(() ->
                                 weatherConverter.convert(weatherResponse)

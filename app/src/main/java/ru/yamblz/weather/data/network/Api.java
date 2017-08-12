@@ -14,5 +14,6 @@ public interface Api {
             @Path("lat") double latitude,
             @Path("lng") double longitude,
             @Query("lang") String lang,
-            @Query("exclude") String blocks);
+            @Query("exclude") String blocks,
+            @Query("extend") String extend);
 }

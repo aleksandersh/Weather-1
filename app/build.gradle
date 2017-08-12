@@ -24,7 +24,7 @@ android {
     }
     defaultConfig {
         applicationId "ru.yamblz.weather"
-        minSdkVersion 17
+        minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
