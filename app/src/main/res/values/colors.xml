@@ -16,4 +16,6 @@
 
     <color name="overview_forecast_temperature_day">#512828</color>
     <color name="overview_forecast_temperature_night">#2e356c</color>
+
+    <color name="cities_toolbar">#FFFFFF</color>
 </resources>

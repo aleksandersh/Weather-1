@@ -15,9 +15,23 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@android:color/background_light"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:theme="@style/AppTheme"/>
+            app:theme="@style/AppTheme">
+
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_gravity="start"
+                android:src="@drawable/yandex_logo"/>
+
+            <TextView
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"/>
+
+        </android.support.v7.widget.Toolbar>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/view_pager"
