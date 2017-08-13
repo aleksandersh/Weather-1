@@ -27,6 +27,10 @@ public interface OverviewContract {
          * Устанавливает прогноз погоды.
          */
         void setForecasts(List<DailyForecast> forecasts);
+        /**
+         * @param favorite Устанавливает флаг избранного.
+         */
+        void setFavorite(boolean favorite);
     }
 
     interface OverviewPresenter extends MvpPresenter<OverviewView> {
@@ -47,5 +51,11 @@ public interface OverviewContract {
          * @param location Локация.
          */
         void requestCityByLocation(Location location);
+        /**
+         * Сохраняет/удаляет локацию в избранном.
+         * @param location Локация.
+         * @param favorite Флаг.
+         */
+        void setFavorite(Location location, boolean favorite);
     }
 }

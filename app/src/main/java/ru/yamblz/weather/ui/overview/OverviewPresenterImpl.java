@@ -85,12 +85,29 @@ public class OverviewPresenterImpl extends BasePresenter<OverviewContract.Overvi
                         .subscribe(
                                 city -> {
                                     getView().displayCityName(city.getName());
+                                    getView().setFavorite(city.isFavorite());
                                 },
                                 throwable -> {
                                     getView().showError();
                                     String unknownCity = context.getString(R.string.cities_unknown_city);
                                     getView().displayCityName(unknownCity);
+                                    getView().setFavorite(false);
                                 }));
+    }
+
+    @Override
+    public void setFavorite(Location location, boolean favorite) {
+        getCompositeDisposable().add(
+                useCase.setFavorite(location, favorite)
+                        .subscribe(
+                                () -> {
+                                },
+                                err -> {
+                                    getView().setFavorite(!favorite);
+                                    getView().showError();
+                                }
+                        )
+        );
     }
 
     private void displayForecasts(List<Forecast> forecasts) {

@@ -16,6 +16,10 @@ import ru.yamblz.weather.ui.base.MvpView;
  */
 
 public interface CitiesContract {
+    interface CitiesActivity {
+        void onSelectionSuccessful();
+    }
+
     interface CitiesView extends MvpView {
         /**
          * Вывести список предпологаемых мест.

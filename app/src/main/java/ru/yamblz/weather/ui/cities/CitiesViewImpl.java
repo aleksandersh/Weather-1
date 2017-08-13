@@ -127,11 +127,12 @@ public class CitiesViewImpl extends BaseFragment implements CitiesContract.Citie
     @Override
     public void setSearchText(String text) {
         mSearchInput.setText(text);
+        mSearchInput.setSelection(text.length());
     }
 
     @Override
     public void onSelectionSuccessful() {
-        getActivity().getSupportFragmentManager().popBackStack();
+        ((CitiesContract.CitiesActivity) getActivity()).onSelectionSuccessful();
     }
 
     @OnClick(R.id.cities_clear_button)
@@ -189,6 +190,7 @@ public class CitiesViewImpl extends BaseFragment implements CitiesContract.Citie
             mPrediction = prediction;
             mCityTextView.setText(prediction.getText());
             if (prediction.isFavorite()) mImageView.setImageResource(R.color.colorAccent);
+            else mImageView.setImageResource(0);
         }
     }
 

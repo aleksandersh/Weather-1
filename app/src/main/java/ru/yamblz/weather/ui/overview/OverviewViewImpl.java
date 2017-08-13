@@ -15,16 +15,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding2.view.RxView;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.Disposable;
 import ru.yamblz.weather.R;
 import ru.yamblz.weather.data.model.places.Location;
 import ru.yamblz.weather.data.model.response.Currently;
@@ -37,8 +41,8 @@ import ru.yamblz.weather.utils.Converter;
 import ru.yamblz.weather.utils.GlobalConstants;
 import ru.yamblz.weather.utils.RxBus;
 
-
 public class OverviewViewImpl extends BaseFragment implements OverviewContract.OverviewView, SwipeRefreshLayout.OnRefreshListener {
+    private static final int DELAY_SETTING_FAVORITE = 300;
 
     @BindView(R.id.swipeToRefresh)
     SwipeRefreshLayout swipeRefreshLayout;
@@ -67,6 +71,8 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
     @BindView(R.id.forecast_recycler_view)
     RecyclerView forecastRecyclerView;
 
+    ImageView toolbarBookmark;
+
     @Inject
     OverviewPresenterImpl presenter;
 
@@ -78,8 +84,10 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
 
     private ActionBar actionBar;
     private Location currentLocation;
+    private boolean favorite;
     private ForecastAdapter forecastAdapter;
     private DateFormat dateFormat;
+    private Disposable favoriteDisposable;
 
     @Override
     protected int provideLayout() {
@@ -95,6 +103,7 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
                 (weatherResponse) -> displayWeatherData((WeatherResponse) weatherResponse));
         presenter.onAttach(this);
         actionBar = ((MainActivity) getActivity()).getSupportActionBar();
+        setupToolbar();
 
         swipeRefreshLayout.setOnRefreshListener(this);
         setupForecastRecyclerView();
@@ -110,6 +119,7 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
         rxBus.unsubscribe(this);
         presenter.onDetach();
         actionBar = null;
+        if (favoriteDisposable != null) favoriteDisposable.dispose();
     }
 
     @Override
@@ -177,12 +187,33 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
         forecastAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+        if (favorite) {
+            toolbarBookmark.setImageResource(R.drawable.ic_bookmark_active);
+        } else {
+            toolbarBookmark.setImageResource(R.drawable.ic_bookmark);
+        }
+    }
+
     private void setupForecastRecyclerView() {
         forecastRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         forecastAdapter = new ForecastAdapter();
         forecastRecyclerView.setAdapter(forecastAdapter);
         forecastRecyclerView.addItemDecoration(
                 new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+    }
+
+    private void setupToolbar() {
+        toolbarBookmark = getActivity().findViewById(R.id.toolbar_bookmark);
+        if (toolbarBookmark != null) {
+            toolbarBookmark.setVisibility(View.VISIBLE);
+            favoriteDisposable = RxView.clicks(toolbarBookmark)
+                    .doOnNext(o -> setFavorite(!favorite))
+                    .debounce(DELAY_SETTING_FAVORITE, TimeUnit.MILLISECONDS)
+                    .subscribe(o -> presenter.setFavorite(currentLocation, favorite));
+        }
     }
 
     class ForecastViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

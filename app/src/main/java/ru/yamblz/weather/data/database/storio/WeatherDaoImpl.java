@@ -116,11 +116,16 @@ public class WeatherDaoImpl implements WeatherDao {
     public Observable<List<City>> getFavoriteCitiesObservable(String lang) {
         BehaviorSubject<List<City>> subject = favoriteCities.get(lang);
         if (subject == null) {
-            subject = BehaviorSubject.createDefault(getFavoriteCities(lang));
+            subject = BehaviorSubject.createDefault(getFavoriteCitiesByLang(lang));
             favoriteCities.put(lang, subject);
         }
 
         return subject;
+    }
+
+    @Override
+    public Single<List<City>> getFavoriteCities(String lang) {
+        return Single.fromCallable(() -> getFavoriteCitiesByLang(lang));
     }
 
     @Override
@@ -138,7 +143,9 @@ public class WeatherDaoImpl implements WeatherDao {
                     .prepare()
                     .executeAsBlocking();
 
-            favoriteCities.forEach((lang, subject) -> subject.onNext(getFavoriteCities(lang)));
+            for (Map.Entry<String, BehaviorSubject<List<City>>> entry : favoriteCities.entrySet()) {
+                entry.getValue().onNext(getFavoriteCitiesByLang(entry.getKey()));
+            }
         } else {
             throw new NoSuchElementException("City by latitude=" + latitude
                     + ", longitude=" + longitude + " not found.");
@@ -196,11 +203,11 @@ public class WeatherDaoImpl implements WeatherDao {
         // TODO: 10.08.2017 Подумать еще
         if (descriptor.getFavorite() && addedLoc) {
             if (addedDesc) {
-                favoriteCities.forEach((lang, subject) -> subject.onNext(getFavoriteCities(lang)));
+                favoriteCities.forEach((lang, subject) -> subject.onNext(getFavoriteCitiesByLang(lang)));
             } else {
                 BehaviorSubject<List<City>> subject = favoriteCities.get(localization.getLang());
                 if (subject != null) {
-                    subject.onNext(getFavoriteCities(localization.getLang()));
+                    subject.onNext(getFavoriteCitiesByLang(localization.getLang()));
                 }
             }
         }
@@ -315,7 +322,7 @@ public class WeatherDaoImpl implements WeatherDao {
                 .executeAsBlocking();
     }
 
-    private List<City> getFavoriteCities(String lang) {
+    private List<City> getFavoriteCitiesByLang(String lang) {
         final String selection = CityDescriptorTable.Cols.FAVORITE + " = ?";
         final String[] selectionArgs = new String[]{String.valueOf(1)};
 

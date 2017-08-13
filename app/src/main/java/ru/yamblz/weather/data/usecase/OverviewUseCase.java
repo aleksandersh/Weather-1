@@ -1,5 +1,6 @@
 package ru.yamblz.weather.data.usecase;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import ru.yamblz.weather.data.model.places.City;
@@ -27,4 +28,13 @@ public interface OverviewUseCase {
      * @return Город по координатам.
      */
     Single<City> getCityByCoordinates(double latitude, double longitude, String lang);
+
+    /**
+     * Устанавливает локации флаг избранной.
+     *
+     * @param location Локация.
+     * @param favorite Флаг.
+     * @return Completable.
+     */
+    Completable setFavorite(Location location, boolean favorite);
 }

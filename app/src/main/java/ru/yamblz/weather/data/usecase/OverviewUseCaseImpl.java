@@ -3,6 +3,7 @@ package ru.yamblz.weather.data.usecase;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import ru.yamblz.weather.data.SchedulerProvider;
@@ -56,8 +57,8 @@ public class OverviewUseCaseImpl implements OverviewUseCase {
         } else {
             single = force ? network(lat, lng, lang) :
                     local(lat, lng, lang)
-                            .onErrorResumeNext(network(lat, lng, lang))
-                            .doOnSuccess(weather -> cache = weather);
+                            .onErrorResumeNext(network(lat, lng, lang));
+            single.doOnSuccess(weather -> cache = weather);
         }
 
         return single;
@@ -79,6 +80,12 @@ public class OverviewUseCaseImpl implements OverviewUseCase {
                                         lang)
                                 .doOnSuccess(cityGp -> dao.saveCity(cityGp))))
                 .compose(schedulerProvider.applyIoSchedulers());
+    }
+
+    @Override
+    public Completable setFavorite(Location location, boolean favorite) {
+        return Completable.fromRunnable(() ->
+                dao.setFavoriteCity(location.getLatitude(), location.getLongitude(), favorite));
     }
 
     private Single<Weather> network(double lat, double lng, String lang) {
