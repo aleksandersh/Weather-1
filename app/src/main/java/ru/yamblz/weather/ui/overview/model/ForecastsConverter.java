@@ -41,7 +41,7 @@ public class ForecastsConverter implements DtoToModelConverter<List<Forecast>, L
 
     @Override
     public List<DailyForecast> convert(List<Forecast> forecasts) {
-        // TODO: 13.08.2017 Переделать.
+        // TODO: 13.08.2017 Переделать, если без RecyclerView
 
         int daysCount = forecasts.size() / 24;
         if (daysCount == 0) {

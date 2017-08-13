@@ -168,4 +168,28 @@ public class CitiesPresenterImplTest {
         verify(view).showContent();
         verify(view).showError(exception.getDescriptionResId());
     }
+
+    @Test
+    public void onPredictionSelectedCorrect() {
+        when(useCase.setCurrentLocationByPrediction(any(PlacePrediction.class), anyString()))
+                .thenReturn(Completable.complete());
+
+        presenter.onPredictionSelected(new PlacePrediction("1", "2", true));
+
+        verify(view).onSelectionSuccessful();
+    }
+
+    @Test
+    public void onPredictionSelectedIncorrect() {
+        when(useCase.setCurrentLocationByPrediction(any(PlacePrediction.class), anyString()))
+                .thenReturn(Completable.error(new RuntimeException()));
+
+        presenter.onPredictionSelected(new PlacePrediction("1", "2", true));
+
+        verify(view).showContent();
+
+        verify(view, never()).onSelectionSuccessful();
+        verify(view).showError(anyInt());
+        verify(view).showContent();
+    }
 }

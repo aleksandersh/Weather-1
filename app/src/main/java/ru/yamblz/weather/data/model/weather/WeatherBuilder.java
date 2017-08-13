@@ -113,8 +113,6 @@ public class WeatherBuilder implements ModelBuilder<Weather> {
 
     public WeatherBuilder setForecasts(List<Forecast> forecasts) {
         this.forecasts = new ArrayList<>(forecasts);
-//        Collections.copy(f, forecasts);
-//        this.forecasts = f;
         return this;
     }
 }

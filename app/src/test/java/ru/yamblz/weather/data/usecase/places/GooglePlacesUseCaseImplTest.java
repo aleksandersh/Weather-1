@@ -23,12 +23,10 @@ import ru.yamblz.weather.data.network.PlacesApiClient;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by AleksanderSh on 30.07.2017.
- */
 public class GooglePlacesUseCaseImplTest {
     @Mock
     PlacesApiClient apiClient;
@@ -193,6 +191,32 @@ public class GooglePlacesUseCaseImplTest {
         testObserver.assertComplete();
 
         testObserver.assertValue(city);
+    }
+
+    @Test
+    public void getFavoriteCities() {
+        final String requestLang = "ru";
+
+        final List<City> cities = new ArrayList<>(3);
+        cities.add(new CityBuilder().setGooglePlacesId("10").setLang(requestLang).build());
+        cities.add(new CityBuilder().setGooglePlacesId("20").setLang("en").build());
+        cities.add(new CityBuilder().setGooglePlacesId("10").setLang(requestLang).build());
+
+        City loadedCity = new CityBuilder().setGooglePlacesId("30").setLang(requestLang).build();
+
+        final TestObserver<List<City>> testObserver = TestObserver.create();
+        when(dao.getFavoriteCities(eq(requestLang))).thenReturn(Single.just(cities));
+        when(apiClient.loadCityByPlaceId(eq("20"), eq(requestLang))).thenReturn(Single.just(loadedCity));
+
+        useCase.getFavoriteCities(requestLang).subscribe(testObserver);
+
+        verify(apiClient, times(1)).loadCityByPlaceId(eq("20"), eq(requestLang));
+        verify(dao, times(1)).saveCity(eq(loadedCity));
+
+        assertEquals(testObserver.valueCount(), 1);
+        List<City> loadedCities = testObserver.values().get(0);
+        assertEquals(loadedCities.size(), 3);
+        assertEquals(loadedCities.get(1), loadedCity);
     }
 
     private CityBuilder buildCity(String name, String address, double lat, double lng) {

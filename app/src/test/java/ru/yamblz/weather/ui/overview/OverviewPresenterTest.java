@@ -13,6 +13,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Scheduler;
 import io.reactivex.Single;
@@ -28,6 +29,7 @@ import ru.yamblz.weather.data.model.response.WeatherResponse;
 import ru.yamblz.weather.data.model.weather.Weather;
 import ru.yamblz.weather.data.model.weather.WeatherBuilder;
 import ru.yamblz.weather.data.usecase.OverviewUseCase;
+import ru.yamblz.weather.ui.overview.model.ForecastsConverter;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -51,6 +53,9 @@ public class OverviewPresenterTest {
 
     @Mock
     Context context;
+
+    @Mock
+    ForecastsConverter forecastsConverter;
 
     private OverviewContract.OverviewPresenter presenter;
     private TestScheduler testScheduler;
@@ -79,7 +84,7 @@ public class OverviewPresenterTest {
     @Before
     public void setup() throws Exception {
         MockitoAnnotations.initMocks(this);
-        presenter = new OverviewPresenterImpl(useCase, context);
+        presenter = new OverviewPresenterImpl(useCase, context, forecastsConverter);
         testScheduler = new TestScheduler();
         presenter.onAttach(view);
     }
@@ -171,6 +176,30 @@ public class OverviewPresenterTest {
         when(useCase.getCityByCoordinates(anyDouble(), anyDouble(), anyString())).thenReturn(singleCity);
 
         presenter.requestCityByLocation(new Location(20, 30));
+
+        verify(view).showError();
+    }
+
+    @Test
+    public void setFavoriteCorrect() throws Exception {
+        Location location = new Location(20, 30);
+        Completable completable = Completable.complete();
+
+        when(useCase.setFavorite(any(Location.class), anyBoolean())).thenReturn(completable);
+
+        presenter.setFavorite(location, true);
+
+        verify(view, never()).showError();
+    }
+
+    @Test
+    public void setFavoriteIncorrect() throws Exception {
+        Location location = new Location(20, 30);
+        Completable completable = Completable.error(new RuntimeException());
+
+        when(useCase.setFavorite(any(Location.class), anyBoolean())).thenReturn(completable);
+
+        presenter.setFavorite(location, true);
 
         verify(view).showError();
     }

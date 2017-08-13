@@ -116,4 +116,51 @@ public class Weather {
     public List<Forecast> getForecasts() {
         return forecasts;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Weather weather = (Weather) o;
+
+        if (id != null ? !id.equals(weather.id) : weather.id != null) return false;
+        if (updateTime != null ? !updateTime.equals(weather.updateTime) : weather.updateTime != null)
+            return false;
+        if (language != null ? !language.equals(weather.language) : weather.language != null)
+            return false;
+        if (latitude != null ? !latitude.equals(weather.latitude) : weather.latitude != null)
+            return false;
+        if (longitude != null ? !longitude.equals(weather.longitude) : weather.longitude != null)
+            return false;
+        if (temperature != null ? !temperature.equals(weather.temperature) : weather.temperature != null)
+            return false;
+        if (condition != null ? !condition.equals(weather.condition) : weather.condition != null)
+            return false;
+        if (apparent != null ? !apparent.equals(weather.apparent) : weather.apparent != null)
+            return false;
+        if (humidity != null ? !humidity.equals(weather.humidity) : weather.humidity != null)
+            return false;
+        if (clouds != null ? !clouds.equals(weather.clouds) : weather.clouds != null) return false;
+        if (icon != null ? !icon.equals(weather.icon) : weather.icon != null) return false;
+        return forecasts != null ? forecasts.equals(weather.forecasts) : weather.forecasts == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (updateTime != null ? updateTime.hashCode() : 0);
+        result = 31 * result + (language != null ? language.hashCode() : 0);
+        result = 31 * result + (latitude != null ? latitude.hashCode() : 0);
+        result = 31 * result + (longitude != null ? longitude.hashCode() : 0);
+        result = 31 * result + (temperature != null ? temperature.hashCode() : 0);
+        result = 31 * result + (condition != null ? condition.hashCode() : 0);
+        result = 31 * result + (apparent != null ? apparent.hashCode() : 0);
+        result = 31 * result + (humidity != null ? humidity.hashCode() : 0);
+        result = 31 * result + (clouds != null ? clouds.hashCode() : 0);
+        result = 31 * result + (icon != null ? icon.hashCode() : 0);
+        result = 31 * result + (forecasts != null ? forecasts.hashCode() : 0);
+        return result;
+    }
 }

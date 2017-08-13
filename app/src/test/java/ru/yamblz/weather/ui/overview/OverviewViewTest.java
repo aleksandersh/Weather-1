@@ -1,12 +1,13 @@
 package ru.yamblz.weather.ui.overview;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import static org.mockito.Matchers.anyDouble;
+import ru.yamblz.weather.data.model.places.Location;
+
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -16,13 +17,26 @@ import static org.mockito.Mockito.verify;
 public class OverviewViewTest {
 
     @Test
-    @Ignore("Локация может быть не задана")
     public void requestDataOnRefresh() {
-//        OverviewViewImpl view = new OverviewViewImpl();
-//        OverviewPresenterImpl presenter = mock(OverviewPresenterImpl.class);
-//
-//        view.presenter = presenter;
-//        view.onRefresh();
-//        verify(presenter).requestCurrentWeather(anyDouble(), anyDouble(), eq(true));
+        OverviewViewImpl view = new OverviewViewImpl();
+        OverviewPresenterImpl presenter = mock(OverviewPresenterImpl.class);
+
+        view.presenter = presenter;
+        view.setCurrentLocation(new Location(20, 30));
+        view.onRefresh();
+
+        verify(presenter).requestWeather(any(Location.class), eq(true));
+    }
+
+    @Test
+    public void requestDataOnRefreshIncorrect() {
+        OverviewViewImpl view = new OverviewViewImpl();
+        OverviewPresenterImpl presenter = mock(OverviewPresenterImpl.class);
+
+        view.presenter = presenter;
+        view.setCurrentLocation(null);
+        view.onRefresh();
+
+        verify(presenter).onViewCreated();
     }
 }
