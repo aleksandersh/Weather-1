@@ -21,13 +21,13 @@ import ru.yamblz.weather.ui.base.BasePresenter;
 @PerActivity
 public class CitiesPresenterImpl extends BasePresenter<CitiesContract.CitiesView>
         implements CitiesContract.CitiesPresenter {
-    private CitiesUseCase mPlacesUseCase;
-    private Context mContext;
+    private CitiesUseCase placesUseCase;
+    private Context context;
 
     @Inject
     public CitiesPresenterImpl(CitiesUseCase placesUseCase, @ActivityContext Context context) {
-        mPlacesUseCase = placesUseCase;
-        mContext = context;
+        this.placesUseCase = placesUseCase;
+        this.context = context;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class CitiesPresenterImpl extends BasePresenter<CitiesContract.CitiesView
         getCompositeDisposable().clear();
         if (text.length() > 0) {
             getCompositeDisposable().add(
-                    mPlacesUseCase.loadPlacePredictions(text)
+                    placesUseCase.loadPlacePredictions(text)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
@@ -54,9 +54,9 @@ public class CitiesPresenterImpl extends BasePresenter<CitiesContract.CitiesView
     @Override
     public void onViewCreated() {
         getView().hideContent();
-        String lang = mContext.getString(R.string.api_language_value);
+        String lang = context.getString(R.string.api_language_value);
         getCompositeDisposable().add(
-                mPlacesUseCase.getCurrentCity(lang)
+                placesUseCase.getCurrentCity(lang)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
@@ -73,8 +73,8 @@ public class CitiesPresenterImpl extends BasePresenter<CitiesContract.CitiesView
     @Override
     public void onPredictionSelected(PlacePrediction prediction) {
         getView().hideContent();
-        String lang = mContext.getString(R.string.api_language_value);
-        getCompositeDisposable().add(mPlacesUseCase.setCurrentLocationByPrediction(prediction, lang)
+        String lang = context.getString(R.string.api_language_value);
+        getCompositeDisposable().add(placesUseCase.setCurrentLocationByPrediction(prediction, lang)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

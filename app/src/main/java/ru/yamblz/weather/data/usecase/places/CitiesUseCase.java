@@ -27,6 +27,11 @@ public interface CitiesUseCase {
     Completable setCurrentLocationByPrediction(PlacePrediction prediction, String lang);
 
     /**
+     * @param city Город, который устанавливается текущим.
+     */
+    void setCurrentLocationByCity(City city);
+
+    /**
      * @return Текущая установленная в приложении локация.
      * @see AppPreferenceManager#getLocation()
      * @see #getCurrentCity(String)
@@ -40,4 +45,10 @@ public interface CitiesUseCase {
      * @return Данные об установленном городе.
      */
     Single<City> getCurrentCity(String lang);
+
+    /**
+     * @param lang Язык, на котором необходимо получить данные.
+     * @return Список избранных городов.
+     */
+    Single<List<City>> getFavoriteCities(String lang);
 }

@@ -71,9 +71,13 @@ public class GooglePlacesUseCaseImpl implements CitiesUseCase {
         return weatherDao.getCityByGooglePlaceId(prediction.getId(), lang)
                 .onErrorResumeNext(apiClient.loadCityByPlaceId(prediction.getId(), lang)
                         .doOnSuccess(city -> weatherDao.saveCity(city)))
-                .doAfterSuccess(city -> preferenceManager.setCurrentLocation(
-                        new Location(city.getLatitude(), city.getLongitude())))
+                .doAfterSuccess(this::setCurrentLocationByCity)
                 .toCompletable();
+    }
+
+    @Override
+    public void setCurrentLocationByCity(City city) {
+        preferenceManager.setCurrentLocation(new Location(city.getLatitude(), city.getLongitude()));
     }
 
     @Override
@@ -88,5 +92,23 @@ public class GooglePlacesUseCaseImpl implements CitiesUseCase {
                         location.getLatitude(),
                         location.getLongitude(),
                         lang));
+    }
+
+    @Override
+    public Single<List<City>> getFavoriteCities(String lang) {
+        return weatherDao.getFavoriteCities(lang)
+                .map(cities -> {
+                    for (int i = 0; i < cities.size(); i++) {
+                        City city = cities.get(i);
+                        if (!city.getLang().equals(lang)) {
+                            City cityNew = apiClient
+                                    .loadCityByPlaceId(city.getGooglePlacesId(), lang)
+                                    .blockingGet();
+                            weatherDao.saveCity(cityNew);
+                            cities.set(i, cityNew);
+                        }
+                    }
+                    return cities;
+                });
     }
 }

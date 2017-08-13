@@ -15,7 +15,7 @@
     <string name="overview_feels_like">Feels Like</string>
     <string name="overview_humidity">Humidity</string>
     <string name="overview_clouds">Clouds</string>
-    <string name="forecast_title">Forecast</string>
+    <string name="overview_forecast_title">Forecast</string>
 
     <!--Settings strings-->
     <string name="settings_title">Settings</string>
@@ -38,6 +38,8 @@
     <string name="cities_search_hint">Specify the location</string>
     <string name="cities_clear_button">Clear text</string>
     <string name="cities_unknown_city">Unknown</string>
+    <string name="cities_search_title">Search</string>
+    <string name="cities_favorite_title">Favorite</string>
 
     <!--Places errors-->
     <string name="error_http_io">Connection is not available</string>
