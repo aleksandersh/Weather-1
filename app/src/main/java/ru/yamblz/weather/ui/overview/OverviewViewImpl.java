@@ -21,6 +21,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -107,7 +108,7 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
 
         swipeRefreshLayout.setOnRefreshListener(this);
         setupForecastRecyclerView();
-        dateFormat = new SimpleDateFormat("d.MM");
+        dateFormat = new SimpleDateFormat("d.MM", Locale.getDefault());
         dateFormat.setTimeZone(TimeZone.getDefault());
 
         presenter.onViewCreated();

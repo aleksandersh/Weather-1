@@ -19,6 +19,8 @@ import ru.yamblz.weather.utils.Converter;
 
 /**
  * Created by AleksanderSh on 12.08.2017.
+ * <p>
+ * Конвертер листа прогнозов приложения в лист для вывода.
  */
 
 public class ForecastsConverter implements DtoToModelConverter<List<Forecast>, List<DailyForecast>> {
@@ -30,7 +32,7 @@ public class ForecastsConverter implements DtoToModelConverter<List<Forecast>, L
     private static final int DAY_START = 12;
     private static final int DAY_END = 18;
 
-    private Converter temperatureConverter;
+    private final Converter temperatureConverter;
 
     @Inject
     public ForecastsConverter(Converter temperatureConverter) {
@@ -39,6 +41,8 @@ public class ForecastsConverter implements DtoToModelConverter<List<Forecast>, L
 
     @Override
     public List<DailyForecast> convert(List<Forecast> forecasts) {
+        // TODO: 13.08.2017 Переделать.
+
         int daysCount = forecasts.size() / 24;
         if (daysCount == 0) {
             throw new IllegalArgumentException("Not enough forecasts.");
@@ -55,7 +59,7 @@ public class ForecastsConverter implements DtoToModelConverter<List<Forecast>, L
         int startedHour = 0;
         boolean skipCurrentDay = false;
 
-        if (currentHour > NIGHT_END) {
+        if (currentHour >= NIGHT_END) {
             skipCurrentDay = true;
         }
 

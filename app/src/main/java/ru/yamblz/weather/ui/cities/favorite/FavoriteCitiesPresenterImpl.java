@@ -16,8 +16,8 @@ import ru.yamblz.weather.ui.base.BasePresenter;
 @PerActivity
 public class FavoriteCitiesPresenterImpl extends BasePresenter<FavoriteCitiesContract.CitiesView>
         implements FavoriteCitiesContract.CitiesPresenter {
-    private CitiesUseCase placesUseCase;
-    private Context context;
+    private final CitiesUseCase placesUseCase;
+    private final Context context;
 
     @Inject
     public FavoriteCitiesPresenterImpl(CitiesUseCase placesUseCase, @ActivityContext Context context) {

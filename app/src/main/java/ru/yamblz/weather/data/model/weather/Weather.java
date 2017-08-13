@@ -3,7 +3,6 @@ package ru.yamblz.weather.data.model.weather;
 import com.pushtorefresh.storio.sqlite.annotations.StorIOSQLiteColumn;
 import com.pushtorefresh.storio.sqlite.annotations.StorIOSQLiteType;
 
-import java.util.Date;
 import java.util.List;
 
 import ru.yamblz.weather.data.database.WeatherDbSchema.WeatherTable;

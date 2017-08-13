@@ -9,10 +9,10 @@ import java.util.Date;
  */
 
 public class DailyForecast {
-    private Date date;
-    private String temperatureDay;
-    private String temperatureNight;
-    private String icon;
+    final private Date date;
+    final private String temperatureDay;
+    final private String temperatureNight;
+    final private String icon;
 
     public DailyForecast(Date date, String temperatureDay, String temperatureNight, String icon) {
         this.date = date;

@@ -65,5 +65,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:layout_weight="0"
+        android:contentDescription="@string/powered_by_google_description"
         android:src="@drawable/cities_powered_by_google_light"/>
 </LinearLayout>

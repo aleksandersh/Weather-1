@@ -21,9 +21,9 @@ import ru.yamblz.weather.ui.overview.model.ForecastsConverter;
 @PerActivity
 public class OverviewPresenterImpl extends BasePresenter<OverviewContract.OverviewView> implements OverviewContract.OverviewPresenter {
 
-    private OverviewUseCase useCase;
-    private Context context;
-    private ForecastsConverter forecastsConverter;
+    private final OverviewUseCase useCase;
+    private final Context context;
+    private final ForecastsConverter forecastsConverter;
 
     @Inject
     public OverviewPresenterImpl(OverviewUseCase useCase, @ActivityContext Context context,

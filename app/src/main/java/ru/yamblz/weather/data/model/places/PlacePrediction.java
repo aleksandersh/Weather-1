@@ -7,9 +7,9 @@ package ru.yamblz.weather.data.model.places;
  */
 
 public class PlacePrediction {
-    private String mId;
-    private String mText;
-    private boolean mFavorite;
+    private final String mId;
+    private final String mText;
+    private final boolean mFavorite;
 
     public PlacePrediction(String id, String text, boolean favorite) {
         mId = id;

@@ -31,8 +31,8 @@ public class GooglePlacesClient implements PlacesApiClient {
     private static final String STATUS_NOT_FOUND = "NOT_FOUND";
     private static final String STATUS_UNKNOWN_ERROR = "UNKNOWN_ERROR";
 
-    private GooglePlacesApi mPlacesApi;
-    private PlaceDetailsToCityConverter mPlaceDetailsToCityConverter;
+    private final GooglePlacesApi mPlacesApi;
+    private final PlaceDetailsToCityConverter mPlaceDetailsToCityConverter;
 
     @Inject
     public GooglePlacesClient(GooglePlacesApi placesApi, PlaceDetailsToCityConverter placeDetailsToCityConverter) {

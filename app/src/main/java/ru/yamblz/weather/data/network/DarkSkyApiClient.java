@@ -21,8 +21,8 @@ public class DarkSkyApiClient implements WeatherApiClient {
     private static final String EXCLUDE_BLOCKS = "minutely,daily,alerts,flags";
     private static final String EXTEND = "hourly";
 
-    private Api api;
-    private DtoToModelConverter<WeatherResponse, WeatherBuilder> weatherConverter;
+    final private Api api;
+    final private DtoToModelConverter<WeatherResponse, WeatherBuilder> weatherConverter;
 
     @Inject
     public DarkSkyApiClient(Api api, DtoToModelConverter<WeatherResponse, WeatherBuilder> weatherConverter) {

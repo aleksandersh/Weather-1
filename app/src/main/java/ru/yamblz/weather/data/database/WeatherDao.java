@@ -5,7 +5,6 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import ru.yamblz.weather.data.model.places.City;
-import ru.yamblz.weather.data.model.weather.Forecast;
 import ru.yamblz.weather.data.model.weather.Weather;
 
 /**

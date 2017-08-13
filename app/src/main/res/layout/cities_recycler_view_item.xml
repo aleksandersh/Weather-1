@@ -10,6 +10,7 @@
         android:id="@+id/city_favorite_mark_color"
         android:layout_width="10dp"
         android:layout_height="match_parent"
+        android:contentDescription="@string/city_favorite_mark_description"
         app:srcCompat="?android:attr/colorBackground"/>
 
     <TextView

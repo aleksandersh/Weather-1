@@ -17,11 +17,11 @@ import ru.yamblz.weather.data.network.WeatherApiClient;
 
 @Singleton
 public class OverviewUseCaseImpl implements OverviewUseCase {
-    private SchedulerProvider schedulerProvider;
-    private AppPreferenceManager appPreferenceManager;
-    private WeatherDao dao;
-    private WeatherApiClient apiClient;
-    private PlacesApiClient placesClient;
+    private final SchedulerProvider schedulerProvider;
+    private final AppPreferenceManager appPreferenceManager;
+    private final WeatherDao dao;
+    private final WeatherApiClient apiClient;
+    private final PlacesApiClient placesClient;
 
     private Weather cache;
 

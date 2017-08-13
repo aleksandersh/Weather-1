@@ -22,9 +22,9 @@ import ru.yamblz.weather.data.network.PlacesApiClient;
  */
 
 public class GooglePlacesUseCaseImpl implements CitiesUseCase {
-    private PlacesApiClient apiClient;
-    private AppPreferenceManager preferenceManager;
-    private WeatherDao weatherDao;
+    private final PlacesApiClient apiClient;
+    private final AppPreferenceManager preferenceManager;
+    private final WeatherDao weatherDao;
 
     @Inject
     public GooglePlacesUseCaseImpl(PlacesApiClient apiClient,

@@ -21,6 +21,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_weight="30"
+        android:contentDescription="@string/weather_icon_description"
         app:srcCompat="@drawable/ic_clear_day"/>
 
     <TextView

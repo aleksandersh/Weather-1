@@ -51,4 +51,12 @@
     <string name="error_places_unknown_error">Server-side error</string>
 
     <string name="api_language_value">en</string>
+
+    <string name="toolbar_bookmark_description">Check in to favorite.</string>
+    <string name="city_favorite_mark_description">Favorite city mark.</string>
+    <string name="powered_by_google_description">Authorship data.</string>
+    <string name="weather_icon_description">Weather icon.</string>
+    <string name="temperature_icon_description">Temperature.</string>
+    <string name="humidity_icon_description">Humidity.</string>
+    <string name="clouds_icon_description">Clouds.</string>
 </resources>

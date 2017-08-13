@@ -24,7 +24,7 @@ import ru.yamblz.weather.data.model.weather.WeatherBuilder;
 
 public class WeatherAdvancedGetResolver extends GetResolver<Weather> {
     @NonNull
-    private GetResolver<Weather> mDefaultWeatherGetResolver;
+    private final GetResolver<Weather> mDefaultWeatherGetResolver;
     @NonNull
     private final ThreadLocal<StorIOSQLite> storIOSQLiteFromPerformGet = new ThreadLocal<>();
 

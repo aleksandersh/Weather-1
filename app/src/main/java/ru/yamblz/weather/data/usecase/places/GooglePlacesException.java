@@ -11,7 +11,7 @@ import ru.yamblz.weather.R;
  */
 
 public class GooglePlacesException extends RuntimeException {
-    private ErrorDescription description;
+    private final ErrorDescription description;
 
     public GooglePlacesException(ErrorDescription description) {
         this.description = description;
@@ -37,7 +37,7 @@ public class GooglePlacesException extends RuntimeException {
         UNKNOWN_ERROR(R.string.error_places_unknown_error);
 
         @StringRes
-        int descriptionResId;
+        final int descriptionResId;
 
         ErrorDescription(@StringRes int descriptionResId) {
             this.descriptionResId = descriptionResId;
