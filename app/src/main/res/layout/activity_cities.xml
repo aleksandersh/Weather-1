@@ -19,11 +19,6 @@
             app:popupTheme="@style/AppTheme.PopupOverlay"
             app:theme="@style/AppTheme"/>
 
-        <FrameLayout
-            android:id="@+id/fragment_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
         <android.support.v4.view.ViewPager
             android:id="@+id/view_pager"
             android:layout_width="match_parent"

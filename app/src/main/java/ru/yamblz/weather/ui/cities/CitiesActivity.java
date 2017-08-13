@@ -16,9 +16,14 @@ import ru.yamblz.weather.ui.base.BaseActivity;
 import ru.yamblz.weather.ui.cities.favorite.FavoriteCitiesViewImpl;
 
 public class CitiesActivity extends BaseActivity implements CitiesContract.CitiesActivity {
+    private static final int SEARCH_CITIES_POSITION = 0;
+    private static final int FAVORITE_CITIES_POSITION = 1;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
     ViewPager viewPager;
+    CitiesPagerAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,10 +32,11 @@ public class CitiesActivity extends BaseActivity implements CitiesContract.Citie
         setContentView(R.layout.activity_cities);
         getActivityComponent().inject(this);
         ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
 
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        adapter = new CitiesPagerAdapter(getSupportFragmentManager());
         setupViewPager();
     }
 
@@ -48,7 +54,6 @@ public class CitiesActivity extends BaseActivity implements CitiesContract.Citie
     private boolean setupViewPager() {
         viewPager = findViewById(R.id.view_pager);
         if (viewPager != null) {
-            CitiesPagerAdapter adapter = new CitiesPagerAdapter(getSupportFragmentManager());
             viewPager.setAdapter(adapter);
 
             TabLayout tabLayout = findViewById(R.id.tab_layout);
@@ -63,18 +68,15 @@ public class CitiesActivity extends BaseActivity implements CitiesContract.Citie
     }
 
     private class CitiesPagerAdapter extends FragmentPagerAdapter {
-        private static final int CITIES_VIEW = 0;
-        private static final int FAVORITE_CITIES_VIEW = 1;
-
         public CitiesPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
-            if (position == CITIES_VIEW) {
+            if (position == SEARCH_CITIES_POSITION) {
                 return CitiesViewImpl.newInstance();
-            } else if (position == FAVORITE_CITIES_VIEW) {
+            } else if (position == FAVORITE_CITIES_POSITION) {
                 return FavoriteCitiesViewImpl.newInstance();
             }
 
@@ -88,9 +90,9 @@ public class CitiesActivity extends BaseActivity implements CitiesContract.Citie
 
         @Override
         public CharSequence getPageTitle(int position) {
-            if (position == CITIES_VIEW) {
+            if (position == SEARCH_CITIES_POSITION) {
                 return getString(R.string.cities_search_title);
-            } else if (position == FAVORITE_CITIES_VIEW) {
+            } else if (position == FAVORITE_CITIES_POSITION) {
                 return getString(R.string.cities_favorite_title);
             }
 

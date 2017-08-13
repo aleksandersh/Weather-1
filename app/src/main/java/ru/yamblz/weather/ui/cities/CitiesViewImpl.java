@@ -78,7 +78,9 @@ public class CitiesViewImpl extends BaseFragment implements CitiesContract.Citie
         setupRecyclerView();
         setupSearchInput();
 
-        mPresenter.onViewCreated();
+        if (savedInstanceState == null) {
+            mPresenter.onViewCreated();
+        }
     }
 
     @Override
