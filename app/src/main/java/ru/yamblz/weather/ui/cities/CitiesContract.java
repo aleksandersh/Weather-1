@@ -16,6 +16,10 @@ import ru.yamblz.weather.ui.base.MvpView;
  */
 
 public interface CitiesContract {
+    interface CitiesActivity {
+        void onSelectionSuccessful();
+    }
+
     interface CitiesView extends MvpView {
         /**
          * Вывести список предпологаемых мест.
@@ -24,8 +28,16 @@ public interface CitiesContract {
 
         /**
          * Установить данные об используемом местоположении.
+         *
+         * @deprecated
          */
+        @Deprecated
         void setCurrentLocation(Location location);
+
+        /**
+         * @param text Текст, который необходимо установить в поле ввода поиска.
+         */
+        void setSearchText(String text);
 
         /**
          * Вызывается после завершения выбора локации.
@@ -50,20 +62,22 @@ public interface CitiesContract {
 
     interface CitiesPresenter extends MvpPresenter<CitiesView> {
         /**
-         * Запросить список предполагаемых мест.
+         * При изменении поискового запроса.
+         *
+         * @param text Измененный текст поиска.
          */
-        void requestPredictions(String text);
+        void onSearchTextChanged(String text);
 
         /**
-         * Запросить данные начального заполнения.
+         * После создания View.
          */
-        void requestInitialData();
+        void onViewCreated();
 
         /**
-         * Устанавливает новую локацию в приложении по выбранному предположению.
+         * При выборе предпологаемой локации.
          *
          * @param prediction Предполагаемая локация.
          */
-        void setCurrentLocationByPrediction(PlacePrediction prediction);
+        void onPredictionSelected(PlacePrediction prediction);
     }
 }

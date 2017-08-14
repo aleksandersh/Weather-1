@@ -2,9 +2,20 @@
 <resources>
     <!--<color name="colorPrimary">#E0E0E0</color>-->
     <!--<color name="colorPrimaryDark">F5F5F5</color>-->
-    <color name="colorAccent">#42A5F5</color>
+    <!--<color name="colorAccent">#42A5F5</color>-->
 
     <color name="colorPrimaryText">#000000</color>
     <color name="colorSecondaryText">#8a000000</color>
     <color name="colorDisabledText">#61000000</color>
+
+    <color name="colorPrimary">#80d8ff</color>
+    <color name="colorPrimaryDark">#49a7cc</color>
+    <color name="colorAccent">#ffd54f</color>
+
+    <color name="card_view_background">#80FFFFFF</color>
+
+    <color name="overview_forecast_temperature_day">#512828</color>
+    <color name="overview_forecast_temperature_night">#2e356c</color>
+
+    <color name="cities_toolbar">#FFFFFF</color>
 </resources>

@@ -1,6 +1,7 @@
 package ru.yamblz.weather.ui.main;
 
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -10,7 +11,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.graphics.drawable.DrawerArrowDrawable;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 
@@ -24,7 +27,7 @@ import ru.yamblz.weather.R;
 import ru.yamblz.weather.data.local.AppPreferenceManager;
 import ru.yamblz.weather.ui.about.AboutViewImpl;
 import ru.yamblz.weather.ui.base.BaseActivity;
-import ru.yamblz.weather.ui.cities.CitiesViewImpl;
+import ru.yamblz.weather.ui.cities.CitiesActivity;
 import ru.yamblz.weather.ui.overview.OverviewViewImpl;
 import ru.yamblz.weather.ui.settings.SettingsViewImpl;
 import ru.yamblz.weather.utils.UpdateTaskService;
@@ -39,6 +42,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @BindView(R.id.nav_view)
     NavigationView navigationView;
+
+    ImageView toolbarBookmark;
 
     @Inject
     AppPreferenceManager preferenceManager;
@@ -70,6 +75,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 drawer.openDrawer(GravityCompat.START);
             }
         });
+
+        toolbarBookmark = toolbar.findViewById(R.id.toolbar_bookmark);
 
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
@@ -103,7 +110,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id != fragmentId) {
-            fragmentId = id;
+            if (id != R.id.nav_cities) fragmentId = id;
             selectItem(id);
         }
         drawer.closeDrawer(GravityCompat.START);
@@ -121,12 +128,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void selectItem(int id) {
+        if (toolbarBookmark != null) toolbarBookmark.setVisibility(View.GONE);
+
         switch (id) {
             case R.id.nav_overview:
                 replaceFragment(R.id.contentFrame, new OverviewViewImpl(), false);
                 break;
             case R.id.nav_cities:
-                replaceFragment(R.id.contentFrame, CitiesViewImpl.newInstance(), true);
+                Intent intent = new Intent(this, CitiesActivity.class);
+                startActivity(intent);
                 break;
             case R.id.nav_settings:
                 replaceFragment(R.id.contentFrame, new SettingsViewImpl(), true);

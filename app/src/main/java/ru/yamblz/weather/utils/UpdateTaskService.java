@@ -9,11 +9,11 @@ import com.google.android.gms.gcm.TaskParams;
 
 import javax.inject.Inject;
 
-import io.reactivex.Single;
-import ru.yamblz.weather.BuildConfig;
+import ru.yamblz.weather.R;
+import ru.yamblz.weather.data.database.WeatherDao;
 import ru.yamblz.weather.data.local.AppPreferenceManager;
-import ru.yamblz.weather.data.local.LocalService;
-import ru.yamblz.weather.data.network.Api;
+import ru.yamblz.weather.data.model.places.Location;
+import ru.yamblz.weather.data.network.WeatherApiClient;
 import ru.yamblz.weather.di.component.DaggerBackgroundComponent;
 import ru.yamblz.weather.di.module.AppModule;
 
@@ -24,13 +24,11 @@ public class UpdateTaskService extends GcmTaskService {
     private static final String TAG_LOG = "UpdateTaskService";
 
     @Inject
-    Api api;
-
-    @Inject
-    LocalService localService;
-
-    @Inject
     AppPreferenceManager preferenceManager;
+    @Inject
+    WeatherDao dao;
+    @Inject
+    WeatherApiClient apiClient;
 
     private int result;
 
@@ -40,17 +38,16 @@ public class UpdateTaskService extends GcmTaskService {
         result = GcmNetworkManager.RESULT_SUCCESS;
         Log.d(TAG, "taskIsRunning");
 
-        Single.fromCallable(preferenceManager::getLocation)
-                .map(location -> api.getWeather(BuildConfig.API_KEY,
-                        location.getLatitude(), location.getLongitude())
-                        .doOnSuccess(localService::writeResponseToFile)
-                        .subscribe(
-                                weatherResponse -> result = GcmNetworkManager.RESULT_SUCCESS,
-                                err -> {
-                                    result = GcmNetworkManager.RESULT_FAILURE;
-                                    Log.d(TAG_LOG, err.getMessage());
-                                })
-                );
+        Location location = preferenceManager.getLocation();
+        String lang = getApplicationContext().getString(R.string.api_language_value);
+        apiClient.getWeather(location.getLatitude(), location.getLongitude(), lang)
+                .doOnSuccess(dao::saveWeather)
+                .subscribe(
+                        weather -> result = GcmNetworkManager.RESULT_SUCCESS,
+                        err -> {
+                            result = GcmNetworkManager.RESULT_FAILURE;
+                            Log.d(TAG_LOG, err.getMessage());
+                        });
 
         return result;
     }

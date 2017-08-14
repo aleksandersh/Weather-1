@@ -4,27 +4,46 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding2.view.RxView;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import io.reactivex.disposables.Disposable;
 import ru.yamblz.weather.R;
 import ru.yamblz.weather.data.model.places.Location;
 import ru.yamblz.weather.data.model.response.Currently;
 import ru.yamblz.weather.data.model.response.WeatherResponse;
+import ru.yamblz.weather.data.model.weather.Weather;
 import ru.yamblz.weather.ui.base.BaseFragment;
 import ru.yamblz.weather.ui.main.MainActivity;
+import ru.yamblz.weather.ui.overview.model.DailyForecast;
 import ru.yamblz.weather.utils.Converter;
 import ru.yamblz.weather.utils.GlobalConstants;
 import ru.yamblz.weather.utils.RxBus;
 
-
 public class OverviewViewImpl extends BaseFragment implements OverviewContract.OverviewView, SwipeRefreshLayout.OnRefreshListener {
+    private static final int DELAY_SETTING_FAVORITE = 300;
 
     @BindView(R.id.swipeToRefresh)
     SwipeRefreshLayout swipeRefreshLayout;
@@ -50,6 +69,11 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
     @BindView(R.id.iconImage)
     ImageView icon;
 
+    @BindView(R.id.forecast_recycler_view)
+    RecyclerView forecastRecyclerView;
+
+    ImageView toolbarBookmark;
+
     @Inject
     OverviewPresenterImpl presenter;
 
@@ -61,6 +85,10 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
 
     private ActionBar actionBar;
     private Location currentLocation;
+    private boolean favorite;
+    private ForecastAdapter forecastAdapter;
+    private DateFormat dateFormat;
+    private Disposable favoriteDisposable;
 
     @Override
     protected int provideLayout() {
@@ -76,10 +104,14 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
                 (weatherResponse) -> displayWeatherData((WeatherResponse) weatherResponse));
         presenter.onAttach(this);
         actionBar = ((MainActivity) getActivity()).getSupportActionBar();
+        setupToolbar();
 
         swipeRefreshLayout.setOnRefreshListener(this);
+        setupForecastRecyclerView();
+        dateFormat = new SimpleDateFormat("d.MM", Locale.getDefault());
+        dateFormat.setTimeZone(TimeZone.getDefault());
 
-        presenter.requestInitialData();
+        presenter.onViewCreated();
     }
 
     @Override
@@ -88,15 +120,15 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
         rxBus.unsubscribe(this);
         presenter.onDetach();
         actionBar = null;
+        if (favoriteDisposable != null) favoriteDisposable.dispose();
     }
 
     @Override
     public void onRefresh() {
         if (currentLocation != null) {
-            presenter.requestCurrentWeather(
-                    currentLocation.getLatitude(), currentLocation.getLongitude(), true);
+            presenter.requestWeather(currentLocation, true);
         } else {
-            presenter.requestInitialData();
+            presenter.onViewCreated();
         }
     }
 
@@ -113,8 +145,18 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
     }
 
     @Override
+    public void displayWeatherData(Weather weather) {
+        overviewContent.setVisibility(View.VISIBLE);
+        temperature.setText(getString(R.string.degree, converter.convertTemperature(weather.getTemperature())));
+        currentWeatherCondition.setText(weather.getCondition());
+        icon.setImageResource(converter.convertIconToRes(weather.getIcon()));
+        feelsLike.setText(getString(R.string.degree, converter.convertTemperature(weather.getApparent())));
+        humidity.setText(getString(R.string.percent, converter.convertToPercentage(weather.getHumidity())));
+        clouds.setText(getString(R.string.percent, converter.convertToPercentage(weather.getClouds())));
+    }
+
+    @Override
     public void displayCityName(String name) {
-        //noinspection ConstantConditions
         actionBar.setTitle(name);
     }
 
@@ -125,7 +167,9 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
 
     @Override
     public void showLoading() {
-        swipeRefreshLayout.setRefreshing(true);
+        if (!swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
     }
 
     @Override
@@ -135,9 +179,97 @@ public class OverviewViewImpl extends BaseFragment implements OverviewContract.O
 
     @Override
     public void setCurrentLocation(Location location) {
-        // TODO: 27.07.2017 После добавления городов подгрузка данных из памяти может выдавать неверный результат.
-        presenter.requestCurrentWeather(location.getLatitude(), location.getLongitude(), true);
         currentLocation = location;
-        displayCityName(location.getTitle());
+    }
+
+    @Override
+    public void setForecasts(List<DailyForecast> forecasts) {
+        forecastAdapter.setForecasts(forecasts);
+        forecastAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+        if (favorite) {
+            toolbarBookmark.setImageResource(R.drawable.ic_bookmark_active);
+        } else {
+            toolbarBookmark.setImageResource(R.drawable.ic_bookmark);
+        }
+    }
+
+    private void setupForecastRecyclerView() {
+        forecastRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        forecastAdapter = new ForecastAdapter();
+        forecastRecyclerView.setAdapter(forecastAdapter);
+        forecastRecyclerView.addItemDecoration(
+                new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+    }
+
+    private void setupToolbar() {
+        toolbarBookmark = getActivity().findViewById(R.id.toolbar_bookmark);
+        if (toolbarBookmark != null) {
+            toolbarBookmark.setVisibility(View.VISIBLE);
+            favoriteDisposable = RxView.clicks(toolbarBookmark)
+                    .doOnNext(o -> setFavorite(!favorite))
+                    .debounce(DELAY_SETTING_FAVORITE, TimeUnit.MILLISECONDS)
+                    .subscribe(o -> presenter.setFavorite(currentLocation, favorite));
+        }
+    }
+
+    class ForecastViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private DailyForecast forecast;
+
+        @BindView(R.id.date_text_view)
+        TextView dateTextView;
+        @BindView(R.id.icon_image_view)
+        ImageView iconImageView;
+        @BindView(R.id.temp_day_text_view)
+        TextView tempDay;
+        @BindView(R.id.temp_night_text_view)
+        TextView tempNight;
+
+        ForecastViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+        }
+
+        void bindItem(DailyForecast forecast) {
+            this.forecast = forecast;
+            dateTextView.setText(dateFormat.format(forecast.getDate()));
+            iconImageView.setImageResource(converter.convertIconToRes(forecast.getIconRes()));
+            tempDay.setText(getString(R.string.degree, forecast.getTemperatureDay()));
+            tempNight.setText(getString(R.string.degree, forecast.getTemperatureNight()));
+        }
+    }
+
+    private class ForecastAdapter extends RecyclerView.Adapter<ForecastViewHolder> {
+        private List<DailyForecast> forecasts = Collections.emptyList();
+
+        @Override
+        public ForecastViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            return new ForecastViewHolder(
+                    inflater.inflate(R.layout.overview_forecasts_item, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(ForecastViewHolder holder, int position) {
+            holder.bindItem(forecasts.get(position));
+        }
+
+        @Override
+        public int getItemCount() {
+            return forecasts.size();
+        }
+
+        void setForecasts(List<DailyForecast> forecasts) {
+            this.forecasts = forecasts;
+        }
     }
 }

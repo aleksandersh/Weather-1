@@ -7,18 +7,12 @@ package ru.yamblz.weather.data.model.places;
  */
 
 public class Location {
-    private String title;
-    private double latitude;
-    private double longitude;
+    private final double latitude;
+    private final double longitude;
 
-    public Location(String title, double latitude, double longitude) {
-        this.title = title;
+    public Location(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public double getLatitude() {
@@ -36,18 +30,17 @@ public class Location {
 
         Location location = (Location) o;
 
-        return latitude == location.latitude
-                && longitude == location.longitude
-                && title.equals(location.title);
+        if (Double.compare(location.latitude, latitude) != 0) return false;
+        return Double.compare(location.longitude, longitude) == 0;
+
     }
 
     @Override
     public int hashCode() {
         int result;
         long temp;
-        result = title.hashCode();
         temp = Double.doubleToLongBits(latitude);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(longitude);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;

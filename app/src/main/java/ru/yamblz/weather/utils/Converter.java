@@ -12,7 +12,7 @@ public class Converter {
     private AppPreferenceManager preferenceManager;
 
     @Inject
-    Converter(AppPreferenceManager preferenceManager) {
+    public Converter(AppPreferenceManager preferenceManager) {
         this.preferenceManager = preferenceManager;
     }
 

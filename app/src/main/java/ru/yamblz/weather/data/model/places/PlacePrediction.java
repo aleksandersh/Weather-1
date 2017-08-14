@@ -7,14 +7,14 @@ package ru.yamblz.weather.data.model.places;
  */
 
 public class PlacePrediction {
-    private String mId;
-    private String mName;
-    private String mText;
+    private final String mId;
+    private final String mText;
+    private final boolean mFavorite;
 
-    public PlacePrediction(String id, String name, String text) {
+    public PlacePrediction(String id, String text, boolean favorite) {
         mId = id;
-        mName = name;
         mText = text;
+        mFavorite = favorite;
     }
 
     /**
@@ -25,16 +25,16 @@ public class PlacePrediction {
     }
 
     /**
-     * @return Наименование местоположения, зависит от запроса.
-     */
-    public String getName() {
-        return mName;
-    }
-
-    /**
      * @return Текстовое описание места.
      */
     public String getText() {
         return mText;
+    }
+
+    /**
+     * @return {@code true}, если место находится в списке избранного, иначе {@code false}.
+     */
+    public boolean isFavorite() {
+        return mFavorite;
     }
 }
